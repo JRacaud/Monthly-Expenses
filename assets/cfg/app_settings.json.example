@@ -1,0 +1,6 @@
+{
+    "appwrite":{
+        "projectId": "<YOUR-PROJECT-ID>",
+        "endpoint": "<YOUR-ENDPOINT>"
+    }
+}
