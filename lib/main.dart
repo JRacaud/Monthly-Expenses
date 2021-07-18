@@ -28,9 +28,7 @@ class Finance extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Finance',
-        home: Scaffold(
-          body:
-              Text(GlobalConfiguration().getDeepValue(APPWRITE_PROJECT_ID_KEY)),
-        ));
+        home: 
+        );
   }
 }
