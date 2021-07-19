@@ -32,6 +32,7 @@ dependencies:
   appwrite: ^0.7.0
   global_configuration: ^2.0.0-nullsafety.1
   json_annotation: ^4.0.1
+  intl: ^0.17.0
 
 dev_dependencies:
   build_runner: ^2.0.6
