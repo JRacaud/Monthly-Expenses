@@ -1,15 +1,21 @@
 import 'package:finance/models/Report.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class ReportWidget extends StatefulWidget {
+  late final _ReportWidgetState state;
+
+  ReportWidget(Report report) {
+    state = _ReportWidgetState();
+    state.report = report;
+  }
+
   @override
-  State<StatefulWidget> createState() => _ReportWidgetState();
+  State<StatefulWidget> createState() => state;
 }
 
 class _ReportWidgetState extends State {
-  Report report = Report();
+  late Report report;
 
   @override
   Widget build(BuildContext context) {
@@ -18,25 +24,16 @@ class _ReportWidgetState extends State {
       Row(
         children: [
           TextButton(
-              onPressed: () => {
-                    setState(() => {report.startOfMonth += 100})
-                  },
-              child: Text("Start: ${report.startOfMonth}")),
+            child: Text("Start: ${report.startOfMonth}"),
+            onPressed: () => {},
+          ),
           Spacer(),
-          TextButton(
-              onPressed: () => {
-                    setState(() => {report.estimatedEndOfMonth += 100})
-                  },
-              child: Text("End (est.): ${report.estimatedEndOfMonth}")),
+          Text("End (est.): ${report.estimatedEndOfMonth}"),
         ],
+      ),
+      Divider(
+        thickness: 1,
       ),
     ]);
   }
-}
-
-String _getDateString(Report report) {
-  var dateTime = DateTime(report.year, report.month);
-  var formatter = DateFormat(DateFormat.YEAR_MONTH);
-
-  return formatter.format(dateTime);
 }
