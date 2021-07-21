@@ -55,9 +55,13 @@ class _ReportWidgetState extends State {
           Text("Processed: $_totalProcessed"),
           Text("Remaining: $_totalRemaining"),
           Expanded(
-              child: ListView(
-            children: _transactionWidgets,
-          )),
+              child: _activeList.length > 0
+                  ? ListView(
+                      children: _transactionWidgets,
+                    )
+                  : Center(
+                      child: Text("No transactions"),
+                    )),
           BottomNavigationBar(
               elevation: 3,
               items: [
