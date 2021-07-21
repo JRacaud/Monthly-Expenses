@@ -2,6 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'Transaction.g.dart';
 
+enum TransactionType { Expenses, Incomes }
+enum TransactionOccurence { Repeating, Unique }
+
 @JsonSerializable()
 class Transaction {
   late String name;

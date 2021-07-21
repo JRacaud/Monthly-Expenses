@@ -1,5 +1,6 @@
 import 'package:finance/helpers/ReportHelper.dart';
 import 'package:finance/models/Report.dart';
+import 'package:finance/models/Transaction.dart';
 import 'package:finance/services/LocalReportService.dart';
 import 'package:finance/services/IReportService.dart';
 import 'package:finance/widgets/ReportWidget.dart';
@@ -18,6 +19,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State {
   IReportService _reportService = LocalReportService();
+  int _selectedTransactionTypeIndex = 0;
   late PreferredSizeWidget _appBar;
   late DateTime _currentDate;
   late Report _currentReport;
@@ -42,6 +44,13 @@ class _HomePageState extends State {
           BottomNavigationBarItem(
               icon: Icon(Icons.attach_money), label: "Incomes")
         ],
+        currentIndex: _selectedTransactionTypeIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedTransactionTypeIndex = index;
+          });
+          _reportWidget.selectTransactionType(TransactionType.values[index]);
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

@@ -11,9 +11,9 @@ class Report {
 
   Report(this.year, this.month);
 
-  int startOfMonth = 0;
-  int estimatedEndOfMonth = 0;
-  int currentAmount = 0;
+  double startOfMonth = 0;
+  double estimatedEndOfMonth = 0;
+  double currentAmount = 0;
   List<Transaction> fixedExpenses = <Transaction>[];
   List<Transaction> fixedIncomes = <Transaction>[];
   List<Transaction> extraExpenses = <Transaction>[];

@@ -11,9 +11,9 @@ Report _$ReportFromJson(Map<String, dynamic> json) {
     json['year'] as int,
     json['month'] as int,
   )
-    ..startOfMonth = json['startOfMonth'] as int
-    ..estimatedEndOfMonth = json['estimatedEndOfMonth'] as int
-    ..currentAmount = json['currentAmount'] as int
+    ..startOfMonth = (json['startOfMonth'] as num).toDouble()
+    ..estimatedEndOfMonth = (json['estimatedEndOfMonth'] as num).toDouble()
+    ..currentAmount = (json['currentAmount'] as num).toDouble()
     ..fixedExpenses = (json['fixedExpenses'] as List<dynamic>)
         .map((e) => Transaction.fromJson(e as Map<String, dynamic>))
         .toList()
