@@ -1,10 +1,11 @@
+import 'package:finance/helpers/ReportHelper.dart';
 import 'package:finance/models/Report.dart';
 import 'package:finance/services/LocalReportService.dart';
 import 'package:finance/services/IReportService.dart';
 import 'package:finance/widgets/ReportWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:finance/extensions/DateTimeExtensions.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -17,15 +18,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State {
-  DateTime _currentDate = DateTime.now();
   IReportService _reportService = LocalReportService();
+  late PreferredSizeWidget _appBar;
+  late DateTime _currentDate;
   late Report _currentReport;
+  late DateTime _reportDateTime;
+
+  _HomePageState() {
+    _currentDate = DateTime.now();
+    _currentReport = Report(_currentDate.year, _currentDate.month);
+    _reportDateTime = ReportHelper.getDateTime(_currentReport);
+    _appBar = _getAppBar();
+  }
 
   void init(Report? report) {
     if (report == null) {
-      _reportService
-          .getReport(_currentDate)
-          .then((value) => _currentReport = value);
+      Future.wait([_reportService.getReport(_currentDate)],
+          cleanUp: (Report value) => {_currentReport = value});
     } else {
       _currentReport = report;
     }
@@ -34,7 +43,7 @@ class _HomePageState extends State {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _getAppBar(),
+      appBar: _appBar,
       body: ReportWidget(_currentReport),
       bottomNavigationBar: BottomNavigationBar(
         items: [
@@ -47,48 +56,36 @@ class _HomePageState extends State {
   }
 
   PreferredSizeWidget _getAppBar() {
-    var reportDateTime = DateTime(_currentReport.year, _currentReport.month);
-
-    Widget? leading =
-        _currentDate.isAfter(reportDateTime) ? null : _getLeadingWidget();
-
     return AppBar(
-      leading: leading,
-      title: Text(_getReportName(reportDateTime)),
+      leading: _getLeadingWidget(_reportDateTime),
+      title: Text(ReportHelper.getName(_currentReport)),
       centerTitle: true,
       actions: [
-        IconButton(
-          icon: Icon(Icons.arrow_right),
-          onPressed: () => {
-            setState(() async => {
-                  _currentReport =
-                      await _reportService.getPreviousReport(_currentReport)
-                })
-          },
-        )
+        IconButton(icon: Icon(Icons.arrow_right), onPressed: getPreviousReport)
       ],
     );
   }
 
-  Widget _getLeadingWidget() {
-    return IconButton(
-      icon: Icon(Icons.arrow_left),
-      onPressed: getNextReport,
-    );
+  Widget? _getLeadingWidget(DateTime reportDateTime) {
+    return reportDateTime.isSameYearMonth(_currentDate)
+        ? null
+        : IconButton(
+            icon: Icon(Icons.arrow_left),
+            onPressed: getNextReport,
+          );
   }
 
-  void getNextReport() {
-    DateTime reportDateTime =
-        DateTime(_currentReport.year, _currentReport.month);
+  Future<void> getNextReport() async {
+    if (_reportDateTime.isSameYearMonth(_currentDate)) return;
 
-    if (_currentDate.isAfter(reportDateTime)) return;
-
-    setState(() async =>
-        {_currentReport = await _reportService.getNextReport(_currentReport)});
+    var report = await _reportService.getNextReport(_currentReport);
+    _reportDateTime = ReportHelper.getDateTime(report);
+    setState(() => {_currentReport = report, _appBar = _getAppBar()});
   }
-}
 
-String _getReportName(DateTime date) {
-  var formatter = DateFormat(DateFormat.YEAR_MONTH);
-  return formatter.format(date);
+  Future<void> getPreviousReport() async {
+    var report = await _reportService.getPreviousReport(_currentReport);
+    _reportDateTime = ReportHelper.getDateTime(report);
+    setState(() => {_currentReport = report, _appBar = _getAppBar()});
+  }
 }

@@ -33,12 +33,11 @@ class LocalReportService extends IReportService {
 
   @override
   Future<Report> getNextReport(Report currentReport) {
-    var year = ((currentReport.month + 1) > 12)
-        ? (currentReport.year + 1)
-        : currentReport.year;
+    var nextMonth = currentReport.month + 1;
+    var nextYear = currentReport.year + 1;
 
-    var month =
-        ((currentReport.month + 1) > 12) ? 0 : (currentReport.month + 1);
+    var year = (nextMonth > 12) ? nextYear : currentReport.year;
+    var month = (nextMonth > 12) ? 1 : nextMonth;
 
     var date = DateTime(year, month);
 
