@@ -12,6 +12,13 @@ const String APP_SETTINGS = "app_settings.json";
 Client appwrite = Client();
 
 void main() async {
+  initializeAppwrite();
+  var app = await initializeApplication();
+
+  runApp(app);
+}
+
+void initializeAppwrite() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GlobalConfiguration().loadFromAsset(APP_SETTINGS);
   var appwriteSettings =
@@ -21,13 +28,31 @@ void main() async {
       .setProject(appwriteSettings.projectId)
       .setEndpoint(appwriteSettings.endpoint)
       .setSelfSigned();
-
-  runApp(Finance());
 }
 
-class Finance extends StatelessWidget {
+Future<Finance> initializeApplication() async {
+  var service = LocalReportService();
+  var report = await service.getReport(DateTime.now());
+
+  return Finance(report);
+}
+
+class Finance extends StatefulWidget {
+  late final Report report;
+
+  Finance(this.report);
+
+  @override
+  State<StatefulWidget> createState() => _FinanceState(report);
+}
+
+class _FinanceState extends State {
+  late Report report;
+
+  _FinanceState(this.report);
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Finance', home: HomePage());
+    return MaterialApp(title: 'Finance', home: HomePage(report));
   }
 }

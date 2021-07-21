@@ -2,7 +2,6 @@ import 'package:finance/models/Report.dart';
 import 'package:finance/models/Transaction.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:swipe/swipe.dart';
 
 enum TransactionList {
@@ -39,9 +38,10 @@ class _ReportWidgetState extends State {
   late List<Transaction> _activeList;
   late List<Widget> _transactionWidgets = <Widget>[];
 
-  _ReportWidgetState(Report report) {
-    this.report = report;
+  _ReportWidgetState(this.report) {
     _activeList = _getActiveList();
+    _totalProcessed = _getTotalProcessed();
+    _totalRemaining = _getTotalRemainder();
     _transactionWidgets = _getTransactionWidgets();
   }
 
@@ -49,27 +49,25 @@ class _ReportWidgetState extends State {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
-      child: Swipe(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(child: Text("${report.currentAmount}")),
-            Row(
-              children: [
-                Text("${report.startOfMonth}"),
-                Spacer(),
-                Text("${report.estimatedEndOfMonth}")
-              ],
-            ),
-            Divider(thickness: 1),
-            Text("Processed: $_totalProcessed"),
-            Text("Remaining: $_totalRemaining"),
-            Expanded(
-                child: ListView(
-              children: _transactionWidgets,
-            ))
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(child: Text("${report.currentAmount}")),
+          Row(
+            children: [
+              Text("${report.startOfMonth}"),
+              Spacer(),
+              Text("${report.estimatedEndOfMonth}")
+            ],
+          ),
+          Divider(thickness: 1),
+          Text("Processed: $_totalProcessed"),
+          Text("Remaining: $_totalRemaining"),
+          Expanded(
+              child: ListView(
+            children: _transactionWidgets,
+          ))
+        ],
       ),
     );
   }

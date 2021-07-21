@@ -8,13 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:finance/extensions/DateTimeExtensions.dart';
 
 class HomePage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    var state = _HomePageState();
-    state.init(null);
+  late final Report report;
 
-    return state;
-  }
+  HomePage(this.report);
+
+  @override
+  State<StatefulWidget> createState() => _HomePageState(report);
 }
 
 class _HomePageState extends State {
@@ -25,20 +24,11 @@ class _HomePageState extends State {
   late DateTime _reportDateTime;
   late ReportWidget _reportWidget;
 
-  _HomePageState() {
+  _HomePageState(this._currentReport) {
     _currentDate = DateTime.now();
-    _currentReport = Report(_currentDate.year, _currentDate.month);
     _reportDateTime = ReportHelper.getDateTime(_currentReport);
     _appBar = _getAppBar();
     _reportWidget = ReportWidget(_currentReport);
-  }
-
-  void init(Report? report) async {
-    if (report == null) {
-      _currentReport = await _reportService.getReport(_currentDate);
-    } else {
-      _currentReport = report;
-    }
   }
 
   @override
