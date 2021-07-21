@@ -15,17 +15,14 @@ class LocalReportService extends IReportService {
       return Report(date.year, date.month);
     } else {
       var json = jsonDecode(await file.readAsString());
-      return Report.fromJson(json);
+      var report = Report.fromJson(json);
+      return report;
     }
   }
 
   @override
   void saveReport(Report report) async {
     var file = await _getReportFile(DateTime(report.year, report.month));
-
-    if (!await file.exists()) {
-      file = await file.create();
-    }
 
     var json = report.toJson();
     file.writeAsString(jsonEncode(json));
@@ -59,10 +56,10 @@ class LocalReportService extends IReportService {
   }
 
   Future<File> _getReportFile(DateTime date) async {
-    var appData = await getApplicationDocumentsDirectory();
+    var appDataDir = await getApplicationDocumentsDirectory();
     var formatter = DateFormat(REPORT_DATE_FORMAT);
     var filename = "${formatter.format(date)}_finance_report.json";
 
-    return File("$appData/$filename");
+    return File("${appDataDir.path}/$filename");
   }
 }

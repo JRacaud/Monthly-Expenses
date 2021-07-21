@@ -69,7 +69,12 @@ class _HomePageState extends State {
       title: Text(ReportHelper.getName(_currentReport)),
       centerTitle: true,
       actions: [
-        IconButton(icon: Icon(Icons.arrow_right), onPressed: getPreviousReport)
+        IconButton(
+            icon: Icon(Icons.arrow_right),
+            onPressed: () {
+              _reportService.saveReport(_currentReport);
+              getPreviousReport();
+            })
       ],
     );
   }
@@ -79,7 +84,10 @@ class _HomePageState extends State {
         ? null
         : IconButton(
             icon: Icon(Icons.arrow_left),
-            onPressed: getNextReport,
+            onPressed: () {
+              _reportService.saveReport(_currentReport);
+              getNextReport();
+            },
           );
   }
 

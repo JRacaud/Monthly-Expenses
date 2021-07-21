@@ -1,6 +1,6 @@
 import 'package:finance/models/Report.dart';
 
-const REPORT_DATE_FORMAT = "YYYYMMMM";
+const String REPORT_DATE_FORMAT = 'yyyy-MM';
 
 abstract class IReportService {
   Future<Report> getReport(DateTime date);
