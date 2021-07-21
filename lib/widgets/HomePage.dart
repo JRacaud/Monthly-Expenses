@@ -33,10 +33,9 @@ class _HomePageState extends State {
     _reportWidget = ReportWidget(_currentReport);
   }
 
-  void init(Report? report) {
+  void init(Report? report) async {
     if (report == null) {
-      Future.wait([_reportService.getReport(_currentDate)],
-          cleanUp: (Report value) => {_currentReport = value});
+      _currentReport = await _reportService.getReport(_currentDate);
     } else {
       _currentReport = report;
     }
@@ -57,6 +56,7 @@ class _HomePageState extends State {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _reportWidget.addItem();
+          _reportService.saveReport(_currentReport);
         },
         child: const Icon(Icons.add),
       ),

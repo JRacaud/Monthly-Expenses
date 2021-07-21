@@ -1,8 +1,8 @@
 import 'package:finance/models/Report.dart';
 import 'package:finance/models/Transaction.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:swipe/swipe.dart';
 
 enum TransactionList {
@@ -33,59 +33,63 @@ class ReportWidget extends StatefulWidget {
 
 class _ReportWidgetState extends State {
   TransactionList _transactionList = TransactionList.FixedExpenses;
+  double _totalProcessed = 0;
+  double _totalRemaining = 0;
   late Report report;
   late List<Transaction> _activeList;
+  late List<Widget> _transactionWidgets = <Widget>[];
 
   _ReportWidgetState(Report report) {
     this.report = report;
-    _activeList = getActiveList();
+    _activeList = _getActiveList();
+    _transactionWidgets = _getTransactionWidgets();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Swipe(
-      child: Column(children: [
-        Text(report.currentAmount.toString()),
-        Row(
+    return Container(
+      padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+      child: Swipe(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextButton(
-              child: Text("Start: ${report.startOfMonth}"),
-              onPressed: () => {},
+            Center(child: Text("${report.currentAmount}")),
+            Row(
+              children: [
+                Text("${report.startOfMonth}"),
+                Spacer(),
+                Text("${report.estimatedEndOfMonth}")
+              ],
             ),
-            Spacer(),
-            Text("End (est.): ${report.estimatedEndOfMonth}"),
+            Divider(thickness: 1),
+            Text("Processed: $_totalProcessed"),
+            Text("Remaining: $_totalRemaining"),
+            Expanded(
+                child: ListView(
+              children: _transactionWidgets,
+            ))
           ],
         ),
-        Divider(
-          thickness: 1,
-        ),
-        Text(_activeList.toString()),
-      ]),
-      onSwipeLeft: () {
-        _transactionList = getPreviousTransactionType();
-        setState(() {
-          _activeList = getActiveList();
-        });
-      },
-      onSwipeRight: () {
-        _transactionList = getNextTransactionType();
-        setState(() {
-          _activeList = getActiveList();
-        });
-      },
+      ),
     );
   }
 
   void setReport(Report report) {
     setState(() {
       this.report = report;
-      _activeList = getActiveList();
+      _activeList = _getActiveList();
+      _totalProcessed = _getTotalProcessed();
+      _totalRemaining = _getTotalRemainder();
+      _transactionWidgets = _getTransactionWidgets();
     });
   }
 
   void addItem() {
     setState(() {
       _activeList.add(Transaction("Netflix", 12));
+      _totalProcessed = _getTotalProcessed();
+      _totalRemaining = _getTotalRemainder();
+      _transactionWidgets = _getTransactionWidgets();
     });
   }
 
@@ -111,7 +115,7 @@ class _ReportWidgetState extends State {
     }
   }
 
-  List<Transaction> getActiveList() {
+  List<Transaction> _getActiveList() {
     switch (_transactionList) {
       case TransactionList.FixedExpenses:
         return report.fixedExpenses;
@@ -122,5 +126,74 @@ class _ReportWidgetState extends State {
       case TransactionList.ExtraIncomes:
         return report.extraIncomes;
     }
+  }
+
+  double _getTotalProcessed() {
+    var sum = 0.0;
+
+    _activeList.forEach((element) {
+      if (element.isProcessed) sum += element.price;
+    });
+
+    return sum;
+  }
+
+  double _getTotalRemainder() {
+    var sum = 0.0;
+
+    _activeList.forEach((element) {
+      if (!element.isProcessed) sum += element.price;
+    });
+
+    return sum;
+  }
+
+  List<Widget> _getTransactionWidgets() {
+    var widgets = <Widget>[];
+
+    for (var transaction in _activeList) {
+      var textStyle = TextStyle(
+          color: transaction.isProcessed ? Colors.white : Colors.black);
+
+      widgets.add(ListTile(
+          title: Text(
+            "${transaction.name}",
+            style: textStyle,
+          ),
+          trailing: Text(
+            "${transaction.price}",
+            style: textStyle,
+          ),
+          tileColor:
+              transaction.isProcessed ? Colors.redAccent : Colors.transparent,
+          onLongPress: () {
+            removeTransaction(transaction, _activeList);
+          },
+          onTap: () {
+            toggleIsProcessed(transaction);
+          }));
+    }
+
+    return widgets;
+  }
+
+  void removeTransaction(Transaction transaction, List<Transaction> list) {
+    list.remove(transaction);
+
+    setState(() {
+      _totalProcessed = _getTotalProcessed();
+      _totalRemaining = _getTotalRemainder();
+      _transactionWidgets = _getTransactionWidgets();
+    });
+  }
+
+  void toggleIsProcessed(Transaction transaction) {
+    transaction.isProcessed = !transaction.isProcessed;
+
+    setState(() {
+      _totalProcessed = _getTotalProcessed();
+      _totalRemaining = _getTotalRemainder();
+      _transactionWidgets = _getTransactionWidgets();
+    });
   }
 }

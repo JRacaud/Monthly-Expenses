@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 
 import 'config/AppWriteSettings.dart';
+import 'models/Report.dart';
+import 'services/LocalReportService.dart';
 import 'widgets/HomePage.dart';
 
 const String APP_SETTINGS = "app_settings.json";
@@ -24,7 +26,6 @@ void main() async {
 }
 
 class Finance extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(title: 'Finance', home: HomePage());
