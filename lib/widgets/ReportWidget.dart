@@ -18,7 +18,8 @@ class ReportWidget extends StatefulWidget {
 
   void setReport(Report report) => state.setReport(report);
 
-  void addItem() => state.addTransaction();
+  void addTransaction(Transaction transaction) =>
+      state.addTransaction(transaction);
 }
 
 class _ReportWidgetState extends State {
@@ -90,8 +91,8 @@ class _ReportWidgetState extends State {
     });
   }
 
-  void addTransaction() {
-    _activeList.add(Transaction("Netflix", 12));
+  void addTransaction(Transaction transaction) {
+    _activeList.add(transaction);
     setState(() {
       _updateTransactionList();
       _updateTotals();
