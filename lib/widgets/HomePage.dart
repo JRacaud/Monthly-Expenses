@@ -23,12 +23,14 @@ class _HomePageState extends State {
   late DateTime _currentDate;
   late Report _currentReport;
   late DateTime _reportDateTime;
+  late ReportWidget _reportWidget;
 
   _HomePageState() {
     _currentDate = DateTime.now();
     _currentReport = Report(_currentDate.year, _currentDate.month);
     _reportDateTime = ReportHelper.getDateTime(_currentReport);
     _appBar = _getAppBar();
+    _reportWidget = ReportWidget(_currentReport);
   }
 
   void init(Report? report) {
@@ -44,13 +46,19 @@ class _HomePageState extends State {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar,
-      body: ReportWidget(_currentReport),
+      body: _reportWidget,
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.outbond), label: "Expenses"),
           BottomNavigationBarItem(
               icon: Icon(Icons.attach_money), label: "Incomes")
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _reportWidget.addItem();
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -80,12 +88,22 @@ class _HomePageState extends State {
 
     var report = await _reportService.getNextReport(_currentReport);
     _reportDateTime = ReportHelper.getDateTime(report);
-    setState(() => {_currentReport = report, _appBar = _getAppBar()});
+    _currentReport = report;
+
+    setState(() {
+      _appBar = _getAppBar();
+      _reportWidget.setReport(_currentReport);
+    });
   }
 
   Future<void> getPreviousReport() async {
     var report = await _reportService.getPreviousReport(_currentReport);
     _reportDateTime = ReportHelper.getDateTime(report);
-    setState(() => {_currentReport = report, _appBar = _getAppBar()});
+    _currentReport = report;
+
+    setState(() {
+      _appBar = _getAppBar();
+      _reportWidget.setReport(_currentReport);
+    });
   }
 }
