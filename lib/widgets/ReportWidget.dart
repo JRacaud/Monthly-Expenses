@@ -168,6 +168,30 @@ class _ReportWidgetState extends State {
     return sum;
   }
 
+  double _getTotalTransactions(List<Transaction> list) {
+    var sum = 0.0;
+
+    list.forEach((element) {
+      sum += element.price;
+    });
+
+    return sum;
+  }
+
+  double _getTotalExpenses(Report report) {
+    var totalFixed = _getTotalTransactions(report.fixedExpenses);
+    var totalExtra = _getTotalTransactions(report.extraExpenses);
+
+    return totalFixed + totalExtra;
+  }
+
+  double _getTotalIncomes(Report report) {
+    var totalFixed = _getTotalTransactions(report.fixedIncomes);
+    var totalExtra = _getTotalTransactions(report.extraIncomes);
+
+    return totalFixed + totalExtra;
+  }
+
   List<Widget> _getTransactionWidgets() {
     var widgets = <Widget>[];
 
@@ -207,6 +231,7 @@ class _ReportWidgetState extends State {
     _totalRemaining = _getTotalRemainder(_activeList);
 
     _updateCurrentAmount();
+    _updateEstimatedEndOfMonth();
   }
 
   void _updateCurrentAmount() {
@@ -218,5 +243,13 @@ class _ReportWidgetState extends State {
     report.currentAmount =
         (report.startOfMonth + totalExtraIncomes + totalFixedIncomes) -
             (totalExtraExpenses + totalFixedExpenses);
+  }
+
+  void _updateEstimatedEndOfMonth() {
+    var totalExpenses = _getTotalExpenses(report);
+    var totalIncomes = _getTotalIncomes(report);
+
+    report.estimatedEndOfMonth =
+        (report.startOfMonth + totalIncomes) - (totalExpenses);
   }
 }
