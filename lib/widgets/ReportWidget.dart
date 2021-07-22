@@ -1,7 +1,10 @@
 import 'package:finance/models/Report.dart';
 import 'package:finance/models/Transaction.dart';
+import 'package:finance/services/IReportService.dart';
+import 'package:finance/services/LocalReportService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ReportWidget extends StatefulWidget {
   late final _ReportWidgetState state;
@@ -28,9 +31,14 @@ class _ReportWidgetState extends State {
   double _totalProcessed = 0;
   double _totalRemaining = 0;
   int _selectedTransactionOccurence = 0;
+  IReportService _reportService = LocalReportService();
+  NumberFormat _numberFormatter =
+      NumberFormat.currency(locale: "EUR", symbol: "€");
   late Report report;
   late List<Transaction> _activeList;
   late List<Widget> _transactionWidgets = <Widget>[];
+
+  final _formKey = GlobalKey<FormState>();
 
   _ReportWidgetState(this.report) {
     _updateTransactionList();
@@ -44,17 +52,71 @@ class _ReportWidgetState extends State {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(child: Text("${report.currentAmount}")),
+          Center(
+              child: Column(children: [
+            Text("Current", style: TextStyle(fontSize: 18)),
+            Divider(color: Colors.transparent, height: 4),
+            Text("${_numberFormatter.format(report.currentAmount)}",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))
+          ])),
           Row(
             children: [
-              Text("${report.startOfMonth}"),
+              TextButton(
+                child: Text("${report.startOfMonth}"),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                            content: Form(
+                          key: _formKey,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text("Amount at the start of the month:"),
+                              TextFormField(
+                                onSaved: (value) {
+                                  setState(() {
+                                    report.startOfMonth = double.parse(value!);
+                                    _updateCurrentAmount();
+                                    _updateEstimatedEndOfMonth();
+                                  });
+                                },
+                                validator: (value) {
+                                  var val = double.tryParse(value!);
+
+                                  if (value.isEmpty || (val == null) || val < 0)
+                                    return "Invalid amount";
+                                  else
+                                    return null;
+                                },
+                              ),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      _formKey.currentState!.save();
+
+                                      _reportService.saveReport(report);
+                                    }
+                                  },
+                                  child: Text("Set amount"))
+                            ],
+                          ),
+                        ));
+                      });
+                },
+              ),
               Spacer(),
-              Text("${report.estimatedEndOfMonth}")
+              Padding(
+                  padding: EdgeInsets.only(right: 12),
+                  child: Text(
+                      "${_numberFormatter.format(report.estimatedEndOfMonth)}"))
             ],
           ),
           Divider(thickness: 1),
-          Text("Processed: $_totalProcessed"),
-          Text("Remaining: $_totalRemaining"),
+          Text("Processed: ${_numberFormatter.format(_totalProcessed)}"),
+          Text("Remaining: ${_numberFormatter.format(_totalRemaining)}"),
+          Divider(color: Colors.transparent),
           Expanded(
               child: _activeList.length > 0
                   ? ListView(

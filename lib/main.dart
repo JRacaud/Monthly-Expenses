@@ -12,14 +12,14 @@ const String APP_SETTINGS = "app_settings.json";
 Client appwrite = Client();
 
 void main() async {
-  initializeAppwrite();
+  WidgetsFlutterBinding.ensureInitialized();
+  // initializeAppwrite();
   var app = await initializeApplication();
 
   runApp(app);
 }
 
 void initializeAppwrite() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await GlobalConfiguration().loadFromAsset(APP_SETTINGS);
   var appwriteSettings =
       AppWriteSettings.fromJson(GlobalConfiguration().get(APPWRITE_KEY));

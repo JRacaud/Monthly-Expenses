@@ -131,12 +131,16 @@ class _HomePageState extends State {
                                     onPressed: () {
                                       if (_formKey.currentState!.validate()) {
                                         _formKey.currentState!.save();
+                                        _transaction.isProcessed =
+                                            _transactionProcessed;
                                         _reportWidget
                                             .addTransaction(_transaction);
 
                                         // This is to make sure that we will add a new object instead of modifying an existing one.
                                         _transaction = Transaction("", 0);
                                         _formKey.currentState!.reset();
+                                        _reportService
+                                            .saveReport(_currentReport);
                                       }
                                     }))
                           ])),
