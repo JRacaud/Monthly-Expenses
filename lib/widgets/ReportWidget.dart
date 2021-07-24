@@ -36,7 +36,6 @@ class _ReportWidgetState extends State {
       NumberFormat.currency(locale: "EUR", symbol: "€");
   late Report report;
   late List<Transaction> _activeList;
-  late List<Widget> _transactionWidgets = <Widget>[];
 
   final _formKey = GlobalKey<FormState>();
 
@@ -62,7 +61,7 @@ class _ReportWidgetState extends State {
           Row(
             children: [
               TextButton(
-                child: Text("${report.startOfMonth}"),
+                child: Text("${_numberFormatter.format(report.startOfMonth)}"),
                 onPressed: () {
                   showDialog(
                       context: context,
@@ -91,15 +90,17 @@ class _ReportWidgetState extends State {
                                     return null;
                                 },
                               ),
+                              Divider(color: Colors.transparent, height: 18),
                               ElevatedButton(
+                                  child: Text("Set amount"),
                                   onPressed: () {
                                     if (_formKey.currentState!.validate()) {
                                       _formKey.currentState!.save();
 
                                       _reportService.saveReport(report);
+                                      Navigator.of(context).pop();
                                     }
-                                  },
-                                  child: Text("Set amount"))
+                                  })
                             ],
                           ),
                         ));
@@ -115,16 +116,48 @@ class _ReportWidgetState extends State {
           ),
           Divider(thickness: 1),
           Text("Processed: ${_numberFormatter.format(_totalProcessed)}"),
-          Text("Remaining: ${_numberFormatter.format(_totalRemaining)}"),
+          Text(
+            "Remaining: ${_numberFormatter.format(_totalRemaining)}",
+          ),
           Divider(color: Colors.transparent),
           Expanded(
               child: _activeList.length > 0
-                  ? ListView(
-                      children: _transactionWidgets,
-                    )
-                  : Center(
-                      child: Text("No transactions"),
-                    )),
+                  ? ListView.builder(
+                      itemCount: _activeList.length,
+                      itemBuilder: (_, index) {
+                        var textStyle = TextStyle(
+                            color: _activeList[index].isProcessed
+                                ? Colors.white
+                                : Colors.black);
+
+                        return Card(
+                            color: _activeList[index].isProcessed
+                                ? Colors.red
+                                : Colors.white,
+                            child: ListTile(
+                              title: Text(
+                                "${_activeList[index].name}",
+                                style: textStyle,
+                              ),
+                              trailing: Text(
+                                "${_numberFormatter.format(_activeList[index].price)}",
+                                style: textStyle,
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _activeList[index].isProcessed =
+                                      !_activeList[index].isProcessed;
+                                });
+                              },
+                              onLongPress: () {
+                                setState(() {
+                                  _activeList.removeAt(index);
+                                  _updateTotals();
+                                });
+                              },
+                            ));
+                      })
+                  : Center(child: Text("No transactions"))),
           BottomNavigationBar(
               elevation: 3,
               items: [
@@ -165,7 +198,6 @@ class _ReportWidgetState extends State {
     list.remove(transaction);
 
     setState(() {
-      _transactionWidgets = _getTransactionWidgets();
       _updateTotals();
     });
   }
@@ -174,7 +206,6 @@ class _ReportWidgetState extends State {
     transaction.isProcessed = !transaction.isProcessed;
 
     setState(() {
-      _transactionWidgets = _getTransactionWidgets();
       _updateTotals();
     });
   }
@@ -290,7 +321,6 @@ class _ReportWidgetState extends State {
 
   void _updateTransactionList() {
     _activeList = _getActiveList();
-    _transactionWidgets = _getTransactionWidgets();
   }
 
   void _updateTotals() {

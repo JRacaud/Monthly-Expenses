@@ -138,7 +138,7 @@ class _HomePageState extends State {
 
                                         // This is to make sure that we will add a new object instead of modifying an existing one.
                                         _transaction = Transaction("", 0);
-                                        _formKey.currentState!.reset();
+                                        // _formKey.currentState!.reset();
                                         _reportService
                                             .saveReport(_currentReport);
                                       }
