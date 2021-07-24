@@ -32,9 +32,6 @@ class _ReportWidgetState extends State<ReportWidget> {
   late Report report;
 
   late List<Transaction> _activeList;
-  int _selectedTransactionOccurence = 0;
-  TransactionOccurence _transactionOccurence = TransactionOccurence.Repeating;
-  TransactionType _transactionType = TransactionType.Expenses;
 
   void setReport(Report report) {
     setState(() {
@@ -67,7 +64,7 @@ class _ReportWidgetState extends State<ReportWidget> {
   }
 
   selectTransactionType(TransactionType type) {
-    _transactionType = type;
+    // _transactionType = type;
 
     setState(() {
       _updateTransactionList();
@@ -75,7 +72,7 @@ class _ReportWidgetState extends State<ReportWidget> {
   }
 
   selectTransactionOccurence(TransactionOccurence occurence) {
-    _transactionOccurence = occurence;
+    // _transactionOccurence = occurence;
 
     setState(() {
       _updateTransactionList();
@@ -83,21 +80,22 @@ class _ReportWidgetState extends State<ReportWidget> {
   }
 
   List<Transaction> _getActiveList() {
-    if (_transactionType == TransactionType.Expenses) {
-      switch (_transactionOccurence) {
-        case TransactionOccurence.Repeating:
-          return report.fixedExpenses;
-        case TransactionOccurence.Unique:
-          return report.extraExpenses;
-      }
-    } else {
-      switch (_transactionOccurence) {
-        case TransactionOccurence.Repeating:
-          return report.fixedIncomes;
-        case TransactionOccurence.Unique:
-          return report.extraIncomes;
-      }
-    }
+    // if (_transactionType == TransactionType.Expenses) {
+    //   switch (_transactionOccurence) {
+    //     case TransactionOccurence.Repeating:
+    //       return report.fixedExpenses;
+    //     case TransactionOccurence.Unique:
+    //       return report.extraExpenses;
+    //   }
+    // } else {
+    //   switch (_transactionOccurence) {
+    //     case TransactionOccurence.Repeating:
+    //       return report.fixedIncomes;
+    //     case TransactionOccurence.Unique:
+    //       return report.extraIncomes;
+    //   }
+    // }
+    return <Transaction>[];
   }
 
   void _updateTransactionList() {
@@ -157,21 +155,6 @@ class _ReportWidgetState extends State<ReportWidget> {
                       _updateTotals();
                     });
                   })),
-          BottomNavigationBar(
-              elevation: 3,
-              items: [
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.repeat), label: "Fixed"),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.repeat_one), label: "Extra")
-              ],
-              currentIndex: _selectedTransactionOccurence,
-              onTap: (index) {
-                setState(() {
-                  _selectedTransactionOccurence = index;
-                });
-                selectTransactionOccurence(TransactionOccurence.values[index]);
-              })
         ],
       ),
     );

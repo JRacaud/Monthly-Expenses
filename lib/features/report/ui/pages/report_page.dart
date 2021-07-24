@@ -3,6 +3,8 @@ import 'package:finance/features/report/helpers/report_helper.dart';
 import 'package:finance/features/report/models/report.dart';
 import 'package:finance/features/report/models/transaction.dart';
 import 'package:finance/features/report/services/local_report_service.dart';
+import 'package:finance/features/report/ui/components/report_transaction_list.dart';
+import 'package:finance/features/report/ui/components/report_transaction_selection.dart';
 import 'package:finance/features/report/ui/components/report_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +23,7 @@ class _ReportPageState extends State<ReportPage> {
   int _selectedTransactionTypeIndex = 0;
   Transaction _transaction = Transaction("", 0);
   bool _transactionProcessed = false;
+  int _selectedTransactionOccurence = 0;
 
   @override
   void initState() {
@@ -74,20 +77,11 @@ class _ReportPageState extends State<ReportPage> {
               },
             )
           ]),
+      // body: ,
       body: ReportWidget(report: _report),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.outbond), label: "Expenses"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.attach_money), label: "Incomes")
-        ],
-        currentIndex: _selectedTransactionTypeIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedTransactionTypeIndex = index;
-          });
-          // _reportWidget.selectTransactionType(TransactionType.values[index]);
-        },
+      bottomSheet: ReportTransactionSelection(
+        onTransactionOccurenceSelected: (occurence) {},
+        onTransactionTypeSelected: (type) {},
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
