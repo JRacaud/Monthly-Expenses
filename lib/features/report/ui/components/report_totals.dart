@@ -1,5 +1,3 @@
-import 'package:finance/features/report/helpers/report_helper.dart';
-import 'package:finance/features/report/helpers/transaction_helper.dart';
 import 'package:finance/features/report/models/report.dart';
 import 'package:finance/features/report/services/local_report_service.dart';
 import 'package:flutter/material.dart';
@@ -7,15 +5,18 @@ import 'package:finance/extensions/double_extensions.dart';
 
 class ReportTotals extends StatefulWidget {
   final Report report;
+  final Function(double) onStartAmountChanged;
 
-  const ReportTotals(this.report, {Key? key}) : super(key: key);
+  const ReportTotals(
+      {Key? key, required this.report, required this.onStartAmountChanged})
+      : super(key: key);
 
   @override
   _ReportTotalsState createState() => _ReportTotalsState(report);
 }
 
 class _ReportTotalsState extends State<ReportTotals> {
-  final Report report;
+  late Report report;
   final _formKey = GlobalKey<FormState>();
   final _reportService = LocalReportService();
 
@@ -35,9 +36,7 @@ class _ReportTotalsState extends State<ReportTotals> {
                 TextFormField(
                   onSaved: (value) {
                     setState(() {
-                      report.startOfMonth = double.parse(value!);
-                      _updateCurrentAmount();
-                      _updateEstimatedEndOfMonth();
+                      widget.onStartAmountChanged(double.parse(value!));
                     });
                   },
                   validator: (value) {
@@ -66,31 +65,11 @@ class _ReportTotalsState extends State<ReportTotals> {
         });
   }
 
-  void _updateCurrentAmount() {
-    var totalFixedExpenses =
-        TransactionHelper.getTotalProcessed(report.fixedExpenses);
-    var totalFixedIncomes =
-        TransactionHelper.getTotalProcessed(report.fixedIncomes);
-    var totalExtraExpenses =
-        TransactionHelper.getTotalProcessed(report.extraExpenses);
-    var totalExtraIncomes =
-        TransactionHelper.getTotalProcessed(report.extraIncomes);
-
-    report.currentAmount =
-        (report.startOfMonth + totalExtraIncomes + totalFixedIncomes) -
-            (totalExtraExpenses + totalFixedExpenses);
-  }
-
-  void _updateEstimatedEndOfMonth() {
-    var totalExpenses = ReportHelper.getTotalExpenses(report);
-    var totalIncomes = ReportHelper.getTotalIncomes(report);
-
-    report.estimatedEndOfMonth =
-        (report.startOfMonth + totalIncomes) - (totalExpenses);
-  }
-
   @override
   Widget build(BuildContext context) {
+    // _updateCurrentAmount();
+    // _updateEstimatedEndOfMonth();
+
     return Column(
       children: [
         Center(

@@ -1,4 +1,4 @@
-import 'package:finance/extensions/double_extensions.dart';
+import 'package:finance/features/report/helpers/report_helper.dart';
 import 'package:finance/features/report/helpers/transaction_helper.dart';
 import 'package:finance/features/report/models/report.dart';
 import 'package:finance/features/report/models/transaction.dart';
@@ -8,36 +8,31 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ReportWidget extends StatefulWidget {
-  ReportWidget(Report report) {
-    state = _ReportWidgetState(report);
-  }
+  final Report report;
 
-  late final _ReportWidgetState state;
+  ReportWidget({required this.report});
 
   @override
-  State<StatefulWidget> createState() => state;
+  State<StatefulWidget> createState() => _ReportWidgetState(report);
 
-  void selectTransactionType(TransactionType type) =>
-      state.selectTransactionType(type);
+  // void selectTransactionType(TransactionType type) =>
+  //     state.selectTransactionType(type);
 
-  void setReport(Report report) => state.setReport(report);
+  // void setReport(Report report) => state.setReport(report);
 
-  void addTransaction(Transaction transaction) =>
-      state.addTransaction(transaction);
+  // void addTransaction(Transaction transaction) =>
+  //     state.addTransaction(transaction);
 }
 
-class _ReportWidgetState extends State {
+class _ReportWidgetState extends State<ReportWidget> {
   _ReportWidgetState(this.report) {
     _updateTransactionList();
-    _updateTotals();
   }
 
   late Report report;
 
   late List<Transaction> _activeList;
   int _selectedTransactionOccurence = 0;
-  double _totalProcessed = 0;
-  double _totalRemaining = 0;
   TransactionOccurence _transactionOccurence = TransactionOccurence.Repeating;
   TransactionType _transactionType = TransactionType.Expenses;
 
@@ -45,31 +40,29 @@ class _ReportWidgetState extends State {
     setState(() {
       this.report = report;
       _updateTransactionList();
-      _updateTotals();
     });
   }
 
   void addTransaction(Transaction transaction) {
-    _activeList.add(transaction);
     setState(() {
-      _updateTransactionList();
+      _activeList.add(transaction);
+
+      // Needed so the totals from the ReportTotals can be updated as well
+      // If we tried to update it during building of the ListView in ReportTransactionList
+      // it would not work and the app won't build.
       _updateTotals();
     });
   }
 
   void removeTransaction(Transaction transaction, List<Transaction> list) {
-    list.remove(transaction);
-
     setState(() {
-      _updateTotals();
+      list.remove(transaction);
     });
   }
 
   void toggleIsProcessed(Transaction transaction) {
-    transaction.isProcessed = !transaction.isProcessed;
-
     setState(() {
-      _updateTotals();
+      transaction.isProcessed = !transaction.isProcessed;
     });
   }
 
@@ -78,7 +71,6 @@ class _ReportWidgetState extends State {
 
     setState(() {
       _updateTransactionList();
-      _updateTotals();
     });
   }
 
@@ -87,7 +79,6 @@ class _ReportWidgetState extends State {
 
     setState(() {
       _updateTransactionList();
-      _updateTotals();
     });
   }
 
@@ -114,11 +105,31 @@ class _ReportWidgetState extends State {
   }
 
   void _updateTotals() {
-    _totalProcessed = TransactionHelper.getTotalProcessed(_activeList);
-    _totalRemaining = TransactionHelper.getTotalRemainder(_activeList);
+    _updateCurrentAmount();
+    _updateEstimatedEndOfMonth();
+  }
 
-    // _updateCurrentAmount();
-    // _updateEstimatedEndOfMonth();
+  void _updateCurrentAmount() {
+    var totalFixedExpenses =
+        TransactionHelper.getTotalProcessed(report.fixedExpenses);
+    var totalFixedIncomes =
+        TransactionHelper.getTotalProcessed(report.fixedIncomes);
+    var totalExtraExpenses =
+        TransactionHelper.getTotalProcessed(report.extraExpenses);
+    var totalExtraIncomes =
+        TransactionHelper.getTotalProcessed(report.extraIncomes);
+
+    report.currentAmount =
+        (report.startOfMonth + totalExtraIncomes + totalFixedIncomes) -
+            (totalExtraExpenses + totalFixedExpenses);
+  }
+
+  void _updateEstimatedEndOfMonth() {
+    var totalExpenses = ReportHelper.getTotalExpenses(report);
+    var totalIncomes = ReportHelper.getTotalIncomes(report);
+
+    report.estimatedEndOfMonth =
+        (report.startOfMonth + totalIncomes) - (totalExpenses);
   }
 
   @override
@@ -128,14 +139,24 @@ class _ReportWidgetState extends State {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ReportTotals(report),
-          Divider(thickness: 1),
-          Text("Processed: ${_totalProcessed.toCurrency()}"),
-          Text(
-            "Remaining: ${_totalRemaining.toCurrency()}",
+          ReportTotals(
+            report: report,
+            onStartAmountChanged: (val) {
+              setState(() {
+                report.startOfMonth = val;
+                _updateTotals();
+              });
+            },
           ),
-          Divider(color: Colors.transparent),
-          Expanded(child: ReportTransactionList(_activeList)),
+          Divider(thickness: 1),
+          Expanded(
+              child: ReportTransactionList(
+                  list: _activeList,
+                  onListChanged: () {
+                    setState(() {
+                      _updateTotals();
+                    });
+                  })),
           BottomNavigationBar(
               elevation: 3,
               items: [

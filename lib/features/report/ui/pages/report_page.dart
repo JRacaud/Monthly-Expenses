@@ -8,82 +8,78 @@ import 'package:finance/features/report/ui/components/report_widget.dart';
 import 'package:flutter/material.dart';
 
 class ReportPage extends StatefulWidget {
-  ReportPage(this.report);
-
-  late final Report report;
-
   @override
-  State<StatefulWidget> createState() => _ReportPageState(report);
+  State<StatefulWidget> createState() => _ReportPageState();
 }
 
-class _ReportPageState extends State {
-  _ReportPageState(this._currentReport) {
+class _ReportPageState extends State<ReportPage> {
+  late Report _report;
+  final _reportService = LocalReportService();
+
+  _ReportPageState() {
     _currentDate = DateTime.now();
-    _reportDateTime = ReportHelper.getDateTime(_currentReport);
     _appBar = _getAppBar();
-    _reportWidget = ReportWidget(_currentReport);
+  }
+
+  @override
+  void initState() async {
+    super.initState();
+
+    _report = await _reportService.getReport(_currentDate);
   }
 
   late PreferredSizeWidget _appBar;
   late DateTime _currentDate;
-  late Report _currentReport;
   final _formKey = GlobalKey<FormState>();
-  late DateTime _reportDateTime;
   ReportService _reportService = LocalReportService();
-  late ReportWidget _reportWidget;
   int _selectedTransactionTypeIndex = 0;
   late Transaction _transaction = Transaction("", 0);
   bool _transactionProcessed = false;
 
   PreferredSizeWidget _getAppBar() {
     return AppBar(
-      leading: _getLeadingWidget(_reportDateTime),
-      title: Text(ReportHelper.getName(_currentReport)),
+      leading: _getLeadingWidget(),
+      title: Text(ReportHelper.getName(report)),
       centerTitle: true,
       actions: [
         IconButton(
             icon: Icon(Icons.arrow_right),
             onPressed: () {
-              _reportService.saveReport(_currentReport);
+              // _reportService.saveReport(report);
               getPreviousReport();
             })
       ],
     );
   }
 
-  Widget? _getLeadingWidget(DateTime reportDateTime) {
+  Widget? _getLeadingWidget() {
+    var reportDateTime = ReportHelper.getDateTime(widget.report);
     return reportDateTime.isSameYearMonth(_currentDate)
         ? null
         : IconButton(
             icon: Icon(Icons.arrow_left),
             onPressed: () {
-              _reportService.saveReport(_currentReport);
+              // _reportService.saveReport(report);
               getNextReport();
             },
           );
   }
 
   Future<void> getNextReport() async {
-    if (_reportDateTime.isSameYearMonth(_currentDate)) return;
-
-    var report = await _reportService.getNextReport(_currentReport);
-    _reportDateTime = ReportHelper.getDateTime(report);
-    _currentReport = report;
+    var nextReport = await _reportService.getNextReport(widget.report);
 
     setState(() {
+      report = nextReport;
       _appBar = _getAppBar();
-      _reportWidget.setReport(_currentReport);
     });
   }
 
   Future<void> getPreviousReport() async {
-    var report = await _reportService.getPreviousReport(_currentReport);
-    _reportDateTime = ReportHelper.getDateTime(report);
-    _currentReport = report;
+    var previousReport = await _reportService.getPreviousReport(report);
 
     setState(() {
+      report = previousReport;
       _appBar = _getAppBar();
-      _reportWidget.setReport(_currentReport);
     });
   }
 
@@ -91,7 +87,7 @@ class _ReportPageState extends State {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar,
-      body: _reportWidget,
+      body: ReportWidget(report: report),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.outbond), label: "Expenses"),
@@ -103,7 +99,7 @@ class _ReportPageState extends State {
           setState(() {
             _selectedTransactionTypeIndex = index;
           });
-          _reportWidget.selectTransactionType(TransactionType.values[index]);
+          // _reportWidget.selectTransactionType(TransactionType.values[index]);
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -181,14 +177,14 @@ class _ReportPageState extends State {
                                         _formKey.currentState!.save();
                                         _transaction.isProcessed =
                                             _transactionProcessed;
-                                        _reportWidget
-                                            .addTransaction(_transaction);
+                                        // _reportWidget
+                                        //     .addTransaction(_transaction);
 
                                         // This is to make sure that we will add a new object instead of modifying an existing one.
                                         _transaction = Transaction("", 0);
                                         // _formKey.currentState!.reset();
-                                        _reportService
-                                            .saveReport(_currentReport);
+                                        // _reportService
+                                        //     .saveReport(_currentReport);
                                       }
                                     }))
                           ])),
