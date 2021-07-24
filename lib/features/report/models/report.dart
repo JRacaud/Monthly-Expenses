@@ -7,6 +7,11 @@ part 'report.g.dart';
 class Report {
   Report(this.year, this.month);
 
+  Report.empty() {
+    this.year = 0;
+    this.month = 0;
+  }
+
   factory Report.fromJson(Map<String, dynamic> json) => _$ReportFromJson(json);
 
   double currentAmount = 0;

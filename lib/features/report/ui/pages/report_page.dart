@@ -3,91 +3,78 @@ import 'package:finance/features/report/helpers/report_helper.dart';
 import 'package:finance/features/report/models/report.dart';
 import 'package:finance/features/report/models/transaction.dart';
 import 'package:finance/features/report/services/local_report_service.dart';
-import 'package:finance/features/report/services/report_service.dart';
 import 'package:finance/features/report/ui/components/report_widget.dart';
 import 'package:flutter/material.dart';
 
 class ReportPage extends StatefulWidget {
+  const ReportPage({Key? key}) : super(key: key);
+
   @override
-  State<StatefulWidget> createState() => _ReportPageState();
+  _ReportPageState createState() => _ReportPageState();
 }
 
 class _ReportPageState extends State<ReportPage> {
-  late Report _report;
-  final _reportService = LocalReportService();
-
-  _ReportPageState() {
-    _currentDate = DateTime.now();
-    _appBar = _getAppBar();
-  }
-
-  @override
-  void initState() async {
-    super.initState();
-
-    _report = await _reportService.getReport(_currentDate);
-  }
-
-  late PreferredSizeWidget _appBar;
-  late DateTime _currentDate;
+  final _currentDate = DateTime.now();
   final _formKey = GlobalKey<FormState>();
-  ReportService _reportService = LocalReportService();
+  var _report = Report.empty();
+  final _reportService = LocalReportService();
   int _selectedTransactionTypeIndex = 0;
-  late Transaction _transaction = Transaction("", 0);
+  Transaction _transaction = Transaction("", 0);
   bool _transactionProcessed = false;
 
-  PreferredSizeWidget _getAppBar() {
-    return AppBar(
-      leading: _getLeadingWidget(),
-      title: Text(ReportHelper.getName(report)),
-      centerTitle: true,
-      actions: [
-        IconButton(
-            icon: Icon(Icons.arrow_right),
-            onPressed: () {
-              // _reportService.saveReport(report);
-              getPreviousReport();
-            })
-      ],
-    );
-  }
+  @override
+  void initState() {
+    super.initState();
 
-  Widget? _getLeadingWidget() {
-    var reportDateTime = ReportHelper.getDateTime(widget.report);
-    return reportDateTime.isSameYearMonth(_currentDate)
-        ? null
-        : IconButton(
-            icon: Icon(Icons.arrow_left),
-            onPressed: () {
-              // _reportService.saveReport(report);
-              getNextReport();
-            },
-          );
+    _reportService.getReport(_currentDate).then((value) {
+      _report = value;
+    });
   }
 
   Future<void> getNextReport() async {
-    var nextReport = await _reportService.getNextReport(widget.report);
+    var nextReport = await _reportService.getNextReport(_report);
 
     setState(() {
-      report = nextReport;
-      _appBar = _getAppBar();
+      _report = nextReport;
     });
   }
 
   Future<void> getPreviousReport() async {
-    var previousReport = await _reportService.getPreviousReport(report);
+    var previousReport = await _reportService.getPreviousReport(_report);
 
     setState(() {
-      report = previousReport;
-      _appBar = _getAppBar();
+      _report = previousReport;
     });
   }
+
+  bool isCurrentDate() =>
+      (_report.year != 0) &&
+      (_report.month != 0) &&
+      ReportHelper.getDateTime(_report).isSameYearMonth(_currentDate);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _appBar,
-      body: ReportWidget(report: report),
+      appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_left),
+            onPressed: isCurrentDate()
+                ? null
+                : () {
+                    getNextReport();
+                  },
+          ),
+          title: Text(ReportHelper.getName(_report)),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.arrow_right),
+              onPressed: () {
+                getPreviousReport();
+              },
+            )
+          ]),
+      body: ReportWidget(report: _report),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.outbond), label: "Expenses"),
