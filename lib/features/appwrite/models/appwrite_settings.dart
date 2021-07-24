@@ -4,12 +4,13 @@ part 'appwrite_settings.g.dart';
 
 @JsonSerializable()
 class AppwriteSettings {
-  late String projectId;
-  late String endpoint;
-
   AppwriteSettings();
 
   factory AppwriteSettings.fromJson(Map<String, dynamic> json) =>
       _$AppwriteSettingsFromJson(json);
+
+  late String endpoint;
+  late String projectId;
+
   Map<String, dynamic> toJson() => _$AppwriteSettingsToJson(this);
 }

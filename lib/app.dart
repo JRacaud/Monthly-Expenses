@@ -3,18 +3,18 @@ import 'package:finance/features/report/ui/pages/report_page.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatefulWidget {
-  late final Report report;
-
   App(this.report);
+
+  late final Report report;
 
   @override
   State<StatefulWidget> createState() => _AppState(report);
 }
 
 class _AppState extends State {
-  late Report report;
-
   _AppState(this.report);
+
+  late Report report;
 
   @override
   Widget build(BuildContext context) {

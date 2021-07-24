@@ -5,19 +5,19 @@ part 'report.g.dart';
 
 @JsonSerializable()
 class Report {
-  late int month;
-  late int year;
-
   Report(this.year, this.month);
 
-  double startOfMonth = 0;
-  double estimatedEndOfMonth = 0;
+  factory Report.fromJson(Map<String, dynamic> json) => _$ReportFromJson(json);
+
   double currentAmount = 0;
-  List<Transaction> fixedExpenses = <Transaction>[];
-  List<Transaction> fixedIncomes = <Transaction>[];
+  double estimatedEndOfMonth = 0;
   List<Transaction> extraExpenses = <Transaction>[];
   List<Transaction> extraIncomes = <Transaction>[];
+  List<Transaction> fixedExpenses = <Transaction>[];
+  List<Transaction> fixedIncomes = <Transaction>[];
+  late int month;
+  double startOfMonth = 0;
+  late int year;
 
-  factory Report.fromJson(Map<String, dynamic> json) => _$ReportFromJson(json);
   Map<String, dynamic> toJson() => _$ReportToJson(this);
 }
