@@ -1,33 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:finance/models/Report.dart';
+import 'package:finance/config/app_constants.dart';
+import 'package:finance/features/report/models/report.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'IReportService.dart';
+import 'report_service.dart';
 
-class LocalReportService extends IReportService {
-  @override
-  Future<Report> getReport(DateTime date) async {
-    var file = await _getReportFile(date);
-
-    if (!await file.exists() || await file.length() == 0) {
-      return Report(date.year, date.month);
-    } else {
-      var json = jsonDecode(await file.readAsString());
-      var report = Report.fromJson(json);
-      return report;
-    }
-  }
-
-  @override
-  void saveReport(Report report) async {
-    var file = await _getReportFile(DateTime(report.year, report.month));
-
-    var json = report.toJson();
-    file.writeAsString(jsonEncode(json));
-  }
-
+class LocalReportService implements ReportService {
   @override
   Future<Report> getNextReport(Report currentReport) {
     var nextMonth = currentReport.month + 1;
@@ -55,9 +35,30 @@ class LocalReportService extends IReportService {
     return getReport(date);
   }
 
+  @override
+  Future<Report> getReport(DateTime date) async {
+    var file = await _getReportFile(date);
+
+    if (!await file.exists() || await file.length() == 0) {
+      return Report(date.year, date.month);
+    } else {
+      var json = jsonDecode(await file.readAsString());
+      var report = Report.fromJson(json);
+      return report;
+    }
+  }
+
+  @override
+  void saveReport(Report report) async {
+    var file = await _getReportFile(DateTime(report.year, report.month));
+
+    var json = report.toJson();
+    file.writeAsString(jsonEncode(json));
+  }
+
   Future<File> _getReportFile(DateTime date) async {
     var appDataDir = await getApplicationDocumentsDirectory();
-    var formatter = DateFormat(REPORT_DATE_FORMAT);
+    var formatter = DateFormat(reportDateFormat);
     var filename = "${formatter.format(date)}_finance_report.json";
 
     return File("${appDataDir.path}/$filename");
