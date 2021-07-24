@@ -9,6 +9,11 @@ enum TransactionOccurence { Repeating, Unique }
 class Transaction {
   Transaction(this.name, this.price);
 
+  Transaction.empty() {
+    name = '';
+    price = 0;
+  }
+
   factory Transaction.fromJson(Map<String, dynamic> json) =>
       _$TransactionFromJson(json);
 
