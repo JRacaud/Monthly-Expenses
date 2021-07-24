@@ -1,7 +1,7 @@
-import 'package:finance/models/Report.dart';
-import 'package:finance/models/Transaction.dart';
-import 'package:finance/services/IReportService.dart';
-import 'package:finance/services/LocalReportService.dart';
+import 'package:finance/features/report/models/report.dart';
+import 'package:finance/features/report/models/transaction.dart';
+import 'package:finance/features/report/services/local_report_service.dart';
+import 'package:finance/features/report/services/report_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -31,7 +31,7 @@ class _ReportWidgetState extends State {
   double _totalProcessed = 0;
   double _totalRemaining = 0;
   int _selectedTransactionOccurence = 0;
-  IReportService _reportService = LocalReportService();
+  ReportService _reportService = LocalReportService();
   NumberFormat _numberFormatter =
       NumberFormat.currency(locale: "EUR", symbol: "€");
   late Report report;
@@ -288,35 +288,6 @@ class _ReportWidgetState extends State {
     var totalExtra = _getTotalTransactions(report.extraIncomes);
 
     return totalFixed + totalExtra;
-  }
-
-  List<Widget> _getTransactionWidgets() {
-    var widgets = <Widget>[];
-
-    for (var transaction in _activeList) {
-      var textStyle = TextStyle(
-          color: transaction.isProcessed ? Colors.white : Colors.black);
-
-      widgets.add(ListTile(
-          title: Text(
-            "${transaction.name}",
-            style: textStyle,
-          ),
-          trailing: Text(
-            "${transaction.price}",
-            style: textStyle,
-          ),
-          tileColor:
-              transaction.isProcessed ? Colors.redAccent : Colors.transparent,
-          onLongPress: () {
-            removeTransaction(transaction, _activeList);
-          },
-          onTap: () {
-            toggleIsProcessed(transaction);
-          }));
-    }
-
-    return widgets;
   }
 
   void _updateTransactionList() {

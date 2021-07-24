@@ -1,4 +1,4 @@
-import 'package:finance/models/Report.dart';
+import 'package:finance/features/report/models/report.dart';
 import 'package:intl/intl.dart';
 
 class ReportHelper {

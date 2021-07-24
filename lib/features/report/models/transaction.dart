@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'Transaction.g.dart';
+part 'transaction.g.dart';
 
 enum TransactionType { Expenses, Incomes }
 enum TransactionOccurence { Repeating, Unique }

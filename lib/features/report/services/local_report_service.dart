@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:finance/models/Report.dart';
+import 'package:finance/config/app_constants.dart';
+import 'package:finance/features/report/models/report.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'IReportService.dart';
+import 'report_service.dart';
 
-class LocalReportService extends IReportService {
+class LocalReportService implements ReportService {
   @override
   Future<Report> getReport(DateTime date) async {
     var file = await _getReportFile(date);
@@ -57,7 +58,7 @@ class LocalReportService extends IReportService {
 
   Future<File> _getReportFile(DateTime date) async {
     var appDataDir = await getApplicationDocumentsDirectory();
-    var formatter = DateFormat(REPORT_DATE_FORMAT);
+    var formatter = DateFormat(reportDateFormat);
     var filename = "${formatter.format(date)}_finance_report.json";
 
     return File("${appDataDir.path}/$filename");

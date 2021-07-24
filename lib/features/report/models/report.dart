@@ -1,8 +1,7 @@
-import 'package:finance/models/Transaction.dart';
-
+import 'package:finance/features/report/models/transaction.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'Report.g.dart';
+part 'report.g.dart';
 
 @JsonSerializable()
 class Report {

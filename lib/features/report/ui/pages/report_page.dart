@@ -1,40 +1,90 @@
-import 'package:finance/helpers/ReportHelper.dart';
-import 'package:finance/models/Report.dart';
-import 'package:finance/models/Transaction.dart';
-import 'package:finance/services/LocalReportService.dart';
-import 'package:finance/services/IReportService.dart';
-import 'package:finance/widgets/ReportWidget.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:finance/extensions/dart_time_extensions.dart';
+import 'package:finance/features/report/helpers/report_helper.dart';
+import 'package:finance/features/report/models/report.dart';
+import 'package:finance/features/report/models/transaction.dart';
+import 'package:finance/features/report/services/local_report_service.dart';
+import 'package:finance/features/report/services/report_service.dart';
+import 'package:finance/features/report/ui/components/report_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:finance/extensions/DateTimeExtensions.dart';
 
-class HomePage extends StatefulWidget {
+class ReportPage extends StatefulWidget {
+  ReportPage(this.report);
+
   late final Report report;
 
-  HomePage(this.report);
-
   @override
-  State<StatefulWidget> createState() => _HomePageState(report);
+  State<StatefulWidget> createState() => _ReportPageState(report);
 }
 
-class _HomePageState extends State {
-  IReportService _reportService = LocalReportService();
-  int _selectedTransactionTypeIndex = 0;
-  late PreferredSizeWidget _appBar;
-  late DateTime _currentDate;
-  late Report _currentReport;
-  late DateTime _reportDateTime;
-  late ReportWidget _reportWidget;
-  late Transaction _transaction = Transaction("", 0);
-  bool _transactionProcessed = false;
-
-  final _formKey = GlobalKey<FormState>();
-
-  _HomePageState(this._currentReport) {
+class _ReportPageState extends State {
+  _ReportPageState(this._currentReport) {
     _currentDate = DateTime.now();
     _reportDateTime = ReportHelper.getDateTime(_currentReport);
     _appBar = _getAppBar();
     _reportWidget = ReportWidget(_currentReport);
+  }
+
+  late PreferredSizeWidget _appBar;
+  late DateTime _currentDate;
+  late Report _currentReport;
+  final _formKey = GlobalKey<FormState>();
+  late DateTime _reportDateTime;
+  ReportService _reportService = LocalReportService();
+  late ReportWidget _reportWidget;
+  int _selectedTransactionTypeIndex = 0;
+  late Transaction _transaction = Transaction("", 0);
+  bool _transactionProcessed = false;
+
+  PreferredSizeWidget _getAppBar() {
+    return AppBar(
+      leading: _getLeadingWidget(_reportDateTime),
+      title: Text(ReportHelper.getName(_currentReport)),
+      centerTitle: true,
+      actions: [
+        IconButton(
+            icon: Icon(Icons.arrow_right),
+            onPressed: () {
+              _reportService.saveReport(_currentReport);
+              getPreviousReport();
+            })
+      ],
+    );
+  }
+
+  Widget? _getLeadingWidget(DateTime reportDateTime) {
+    return reportDateTime.isSameYearMonth(_currentDate)
+        ? null
+        : IconButton(
+            icon: Icon(Icons.arrow_left),
+            onPressed: () {
+              _reportService.saveReport(_currentReport);
+              getNextReport();
+            },
+          );
+  }
+
+  Future<void> getNextReport() async {
+    if (_reportDateTime.isSameYearMonth(_currentDate)) return;
+
+    var report = await _reportService.getNextReport(_currentReport);
+    _reportDateTime = ReportHelper.getDateTime(report);
+    _currentReport = report;
+
+    setState(() {
+      _appBar = _getAppBar();
+      _reportWidget.setReport(_currentReport);
+    });
+  }
+
+  Future<void> getPreviousReport() async {
+    var report = await _reportService.getPreviousReport(_currentReport);
+    _reportDateTime = ReportHelper.getDateTime(report);
+    _currentReport = report;
+
+    setState(() {
+      _appBar = _getAppBar();
+      _reportWidget.setReport(_currentReport);
+    });
   }
 
   @override
@@ -58,8 +108,6 @@ class _HomePageState extends State {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // _reportWidget.addItem();
-          // _reportService.saveReport(_currentReport);
           showDialog(
               context: context,
               builder: (context) {
@@ -150,57 +198,5 @@ class _HomePageState extends State {
         child: const Icon(Icons.add),
       ),
     );
-  }
-
-  PreferredSizeWidget _getAppBar() {
-    return AppBar(
-      leading: _getLeadingWidget(_reportDateTime),
-      title: Text(ReportHelper.getName(_currentReport)),
-      centerTitle: true,
-      actions: [
-        IconButton(
-            icon: Icon(Icons.arrow_right),
-            onPressed: () {
-              _reportService.saveReport(_currentReport);
-              getPreviousReport();
-            })
-      ],
-    );
-  }
-
-  Widget? _getLeadingWidget(DateTime reportDateTime) {
-    return reportDateTime.isSameYearMonth(_currentDate)
-        ? null
-        : IconButton(
-            icon: Icon(Icons.arrow_left),
-            onPressed: () {
-              _reportService.saveReport(_currentReport);
-              getNextReport();
-            },
-          );
-  }
-
-  Future<void> getNextReport() async {
-    if (_reportDateTime.isSameYearMonth(_currentDate)) return;
-
-    var report = await _reportService.getNextReport(_currentReport);
-    _reportDateTime = ReportHelper.getDateTime(report);
-    _currentReport = report;
-
-    setState(() {
-      _appBar = _getAppBar();
-      _reportWidget.setReport(_currentReport);
-    });
-  }
-
-  Future<void> getPreviousReport() async {
-    var report = await _reportService.getPreviousReport(_currentReport);
-    _reportDateTime = ReportHelper.getDateTime(report);
-    _currentReport = report;
-
-    setState(() {
-      _appBar = _getAppBar();
-      _reportWidget.setReport(_currentReport);
-    });
   }
 }
