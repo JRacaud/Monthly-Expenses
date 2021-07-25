@@ -52,12 +52,20 @@ class LocalReportService implements ReportService {
   void saveReport(Report report) async {
     var file = await _getReportFile(DateTime(report.year, report.month));
 
+    if (!await file.parent.exists()) file.parent.createSync(recursive: true);
+
     var json = report.toJson();
-    file.writeAsString(jsonEncode(json));
+    await file.writeAsString(jsonEncode(json));
   }
 
   Future<File> _getReportFile(DateTime date) async {
-    var appDataDir = await getApplicationDocumentsDirectory();
+    Directory? appDataDir;
+
+    if (Platform.isAndroid) appDataDir = await getExternalStorageDirectory();
+
+    if (!Platform.isAndroid || (appDataDir == null))
+      appDataDir = await getApplicationDocumentsDirectory();
+
     var formatter = DateFormat(reportDateFormat);
     var filename = "reports/${formatter.format(date)}_finance_report.json";
 

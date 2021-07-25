@@ -27,11 +27,14 @@ class _ReportPageState extends State<ReportPage> {
     super.initState();
 
     _reportService.getReport(_currentDate).then((value) {
-      _report = value;
+      setState(() {
+        _report = value;
+      });
     });
   }
 
   Future<void> getNextReport() async {
+    _reportService.saveReport(_report);
     var nextReport = await _reportService.getNextReport(_report);
 
     setState(() {
@@ -40,6 +43,7 @@ class _ReportPageState extends State<ReportPage> {
   }
 
   Future<void> getPreviousReport() async {
+    _reportService.saveReport(_report);
     var previousReport = await _reportService.getPreviousReport(_report);
 
     setState(() {
