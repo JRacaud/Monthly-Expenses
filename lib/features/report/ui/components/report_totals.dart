@@ -1,25 +1,22 @@
 import 'package:finance/features/report/helpers/report_helper.dart';
-import 'package:finance/features/report/helpers/transaction_helper.dart';
 import 'package:finance/features/report/models/report.dart';
-import 'package:finance/features/report/services/local_report_service.dart';
 import 'package:flutter/material.dart';
 import 'package:finance/extensions/double_extensions.dart';
 
 class ReportTotals extends StatefulWidget {
   final Report report;
+  final Function(double) onStartAmountChanged;
 
-  const ReportTotals(this.report, {Key? key}) : super(key: key);
+  const ReportTotals(
+      {Key? key, required this.report, required this.onStartAmountChanged})
+      : super(key: key);
 
   @override
-  _ReportTotalsState createState() => _ReportTotalsState(report);
+  _ReportTotalsState createState() => _ReportTotalsState();
 }
 
 class _ReportTotalsState extends State<ReportTotals> {
-  final Report report;
   final _formKey = GlobalKey<FormState>();
-  final _reportService = LocalReportService();
-
-  _ReportTotalsState(this.report);
 
   _updateStartOfMonth() {
     showDialog(
@@ -35,9 +32,7 @@ class _ReportTotalsState extends State<ReportTotals> {
                 TextFormField(
                   onSaved: (value) {
                     setState(() {
-                      report.startOfMonth = double.parse(value!);
-                      _updateCurrentAmount();
-                      _updateEstimatedEndOfMonth();
+                      widget.onStartAmountChanged(double.parse(value!));
                     });
                   },
                   validator: (value) {
@@ -55,8 +50,6 @@ class _ReportTotalsState extends State<ReportTotals> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
-
-                        _reportService.saveReport(report);
                         Navigator.of(context).pop();
                       }
                     })
@@ -67,26 +60,27 @@ class _ReportTotalsState extends State<ReportTotals> {
   }
 
   void _updateCurrentAmount() {
-    var totalFixedExpenses =
-        TransactionHelper.getTotalProcessed(report.fixedExpenses);
-    var totalFixedIncomes =
-        TransactionHelper.getTotalProcessed(report.fixedIncomes);
-    var totalExtraExpenses =
-        TransactionHelper.getTotalProcessed(report.extraExpenses);
-    var totalExtraIncomes =
-        TransactionHelper.getTotalProcessed(report.extraIncomes);
+    var totalExpenses = ReportHelper.getTotalProcessedExpenses(widget.report);
+    var totalIncomes = ReportHelper.getTotalProcessedIncomes(widget.report);
 
-    report.currentAmount =
-        (report.startOfMonth + totalExtraIncomes + totalFixedIncomes) -
-            (totalExtraExpenses + totalFixedExpenses);
+    widget.report.currentAmount =
+        (widget.report.startOfMonth + totalIncomes) - totalExpenses;
   }
 
   void _updateEstimatedEndOfMonth() {
-    var totalExpenses = ReportHelper.getTotalExpenses(report);
-    var totalIncomes = ReportHelper.getTotalIncomes(report);
+    var totalExpenses = ReportHelper.getTotalExpenses(widget.report);
+    var totalIncomes = ReportHelper.getTotalIncomes(widget.report);
 
-    report.estimatedEndOfMonth =
-        (report.startOfMonth + totalIncomes) - (totalExpenses);
+    widget.report.estimatedEndOfMonth =
+        (widget.report.startOfMonth + totalIncomes) - totalExpenses;
+  }
+
+  @override
+  void didUpdateWidget(ReportTotals oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _updateCurrentAmount();
+    _updateEstimatedEndOfMonth();
   }
 
   @override
@@ -97,19 +91,20 @@ class _ReportTotalsState extends State<ReportTotals> {
             child: Column(children: [
           Text("Current", style: TextStyle(fontSize: 18)),
           Divider(color: Colors.transparent, height: 4),
-          Text("${report.currentAmount.toCurrency()}",
+          Text("${widget.report.currentAmount.toCurrency()}",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))
         ])),
         Row(
           children: [
             TextButton(
-              child: Text("${report.startOfMonth.toCurrency()}"),
+              child: Text("${widget.report.startOfMonth.toCurrency()}"),
               onPressed: _updateStartOfMonth,
             ),
             Spacer(),
             Padding(
                 padding: EdgeInsets.only(right: 12),
-                child: Text("${report.estimatedEndOfMonth.toCurrency()}"))
+                child:
+                    Text("${widget.report.estimatedEndOfMonth.toCurrency()}"))
           ],
         )
       ],

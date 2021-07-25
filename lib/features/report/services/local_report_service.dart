@@ -59,7 +59,7 @@ class LocalReportService implements ReportService {
   Future<File> _getReportFile(DateTime date) async {
     var appDataDir = await getApplicationDocumentsDirectory();
     var formatter = DateFormat(reportDateFormat);
-    var filename = "${formatter.format(date)}_finance_report.json";
+    var filename = "reports/${formatter.format(date)}_finance_report.json";
 
     return File("${appDataDir.path}/$filename");
   }

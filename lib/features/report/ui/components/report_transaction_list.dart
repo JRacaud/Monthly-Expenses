@@ -1,56 +1,83 @@
 import 'package:finance/extensions/double_extensions.dart';
+import 'package:finance/features/report/helpers/transaction_helper.dart';
 import 'package:finance/features/report/models/transaction.dart';
 import 'package:flutter/material.dart';
 
 class ReportTransactionList extends StatefulWidget {
-  final List<Transaction> _list;
+  final List<Transaction> list;
+  final VoidCallback onTransactionsChanged;
 
-  const ReportTransactionList(this._list, {Key? key}) : super(key: key);
+  const ReportTransactionList({
+    Key? key,
+    required this.list,
+    required this.onTransactionsChanged,
+  }) : super(key: key);
 
   @override
-  _ReportTransactionListState createState() =>
-      _ReportTransactionListState(_list);
+  _ReportTransactionListState createState() => _ReportTransactionListState();
 }
 
 class _ReportTransactionListState extends State<ReportTransactionList> {
-  final List<Transaction> _list;
+  double _totalProcessed = 0;
+  double _totalRemaining = 0;
 
-  _ReportTransactionListState(this._list);
+  void _updateTotals() {
+    _totalProcessed = TransactionHelper.getTotalProcessed(widget.list);
+    _totalRemaining = TransactionHelper.getTotalRemainder(widget.list);
+  }
+
+  @override
+  void didUpdateWidget(ReportTransactionList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _updateTotals();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return _list.length > 0
-        ? ListView.builder(
-            itemCount: _list.length,
-            itemBuilder: (_, index) {
-              var textStyle = TextStyle(
-                  color:
-                      _list[index].isProcessed ? Colors.white : Colors.black);
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      Text("Processed: ${_totalProcessed.toCurrency()}"),
+      Text("Remaining: ${_totalRemaining.toCurrency()}"),
+      Expanded(
+          child: widget.list.length > 0
+              ? ListView.builder(
+                  itemCount: widget.list.length,
+                  itemBuilder: (_, index) {
+                    var textStyle = TextStyle(
+                        color: widget.list[index].isProcessed
+                            ? Colors.white
+                            : Colors.black);
 
-              return Card(
-                  color: _list[index].isProcessed ? Colors.red : Colors.white,
-                  child: ListTile(
-                    title: Text(
-                      "${_list[index].name}",
-                      style: textStyle,
-                    ),
-                    trailing: Text(
-                      "${_list[index].price.toCurrency()}",
-                      style: textStyle,
-                    ),
-                    onTap: () {
-                      setState(() {
-                        _list[index].isProcessed = !_list[index].isProcessed;
-                      });
-                    },
-                    onLongPress: () {
-                      setState(() {
-                        _list.removeAt(index);
-                        // _updateTotals();
-                      });
-                    },
-                  ));
-            })
-        : Center(child: Text("No transactions"));
+                    return Card(
+                        color: widget.list[index].isProcessed
+                            ? Colors.red
+                            : Colors.white,
+                        child: ListTile(
+                            title: Text(
+                              "${widget.list[index].name}",
+                              style: textStyle,
+                            ),
+                            trailing: Text(
+                              "${widget.list[index].price.toCurrency()}",
+                              style: textStyle,
+                            ),
+                            onTap: () {
+                              setState(() {
+                                widget.list[index].isProcessed =
+                                    !widget.list[index].isProcessed;
+                                _updateTotals();
+                              });
+                              widget.onTransactionsChanged();
+                            },
+                            onLongPress: () {
+                              setState(() {
+                                widget.list.removeAt(index);
+                                _updateTotals();
+                              });
+                              widget.onTransactionsChanged();
+                            }));
+                  })
+              : Center(child: Text("No transactions"))),
+    ]);
   }
 }
