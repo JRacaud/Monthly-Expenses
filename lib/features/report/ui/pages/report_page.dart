@@ -1,6 +1,7 @@
 import 'package:finance/extensions/dart_time_extensions.dart';
 import 'package:finance/features/report/helpers/report_helper.dart';
 import 'package:finance/features/report/models/report.dart';
+import 'package:finance/features/report/models/transaction.dart';
 import 'package:finance/features/report/services/local_report_service.dart';
 import 'package:finance/features/report/ui/components/report_add_transaction_form_dialog.dart';
 import 'package:finance/features/report/ui/components/report_transaction_selection.dart';
@@ -18,6 +19,8 @@ class _ReportPageState extends State<ReportPage> {
   final _currentDate = DateTime.now();
   final _reportService = LocalReportService();
   var _report = Report.empty();
+  var _transactionType = TransactionType.Expenses;
+  var _transactionOccurence = TransactionOccurence.Repeating;
 
   @override
   void initState() {
@@ -72,10 +75,26 @@ class _ReportPageState extends State<ReportPage> {
             )
           ]),
       // body: ,
-      body: ReportWidget(report: _report),
+      body: ReportWidget(
+          report: _report,
+          type: _transactionType,
+          occurence: _transactionOccurence,
+          onStartOfMonthChanged: (value) {
+            setState(() {
+              _report.startOfMonth = value;
+            });
+          }),
       bottomSheet: ReportTransactionSelection(
-        onTransactionOccurenceSelected: (occurence) {},
-        onTransactionTypeSelected: (type) {},
+        onTransactionOccurenceSelected: (occurence) {
+          setState(() {
+            _transactionOccurence = occurence;
+          });
+        },
+        onTransactionTypeSelected: (type) {
+          setState(() {
+            _transactionType = type;
+          });
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => showDialog(
@@ -86,6 +105,10 @@ class _ReportPageState extends State<ReportPage> {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       duration: Duration(milliseconds: 500),
                       content: Text("Transaction Added")));
+                  setState(() {
+                    ReportHelper.addTransaction(_report, transaction,
+                        _transactionType, _transactionOccurence);
+                  });
                 },
               );
             }),

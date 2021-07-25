@@ -38,6 +38,8 @@ class _ReportTransactionSelectionState
               setState(() {
                 _occurrenceIndex = index;
               });
+              widget.onTransactionOccurenceSelected(
+                  TransactionOccurence.values[index]);
             }),
       ),
       BottomNavigationBar(
@@ -51,6 +53,7 @@ class _ReportTransactionSelectionState
           setState(() {
             _typeIndex = index;
           });
+          widget.onTransactionTypeSelected(TransactionType.values[index]);
         },
       )
     ]);

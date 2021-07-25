@@ -1,5 +1,5 @@
+import 'package:finance/features/report/helpers/report_helper.dart';
 import 'package:finance/features/report/models/report.dart';
-import 'package:finance/features/report/services/local_report_service.dart';
 import 'package:flutter/material.dart';
 import 'package:finance/extensions/double_extensions.dart';
 
@@ -12,15 +12,11 @@ class ReportTotals extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ReportTotalsState createState() => _ReportTotalsState(report);
+  _ReportTotalsState createState() => _ReportTotalsState();
 }
 
 class _ReportTotalsState extends State<ReportTotals> {
-  late Report report;
   final _formKey = GlobalKey<FormState>();
-  final _reportService = LocalReportService();
-
-  _ReportTotalsState(this.report);
 
   _updateStartOfMonth() {
     showDialog(
@@ -54,8 +50,6 @@ class _ReportTotalsState extends State<ReportTotals> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
-
-                        _reportService.saveReport(report);
                         Navigator.of(context).pop();
                       }
                     })
@@ -65,30 +59,52 @@ class _ReportTotalsState extends State<ReportTotals> {
         });
   }
 
+  void _updateCurrentAmount() {
+    var totalExpenses = ReportHelper.getTotalProcessedExpenses(widget.report);
+    var totalIncomes = ReportHelper.getTotalProcessedIncomes(widget.report);
+
+    widget.report.currentAmount =
+        (widget.report.startOfMonth + totalIncomes) - totalExpenses;
+  }
+
+  void _updateEstimatedEndOfMonth() {
+    var totalExpenses = ReportHelper.getTotalExpenses(widget.report);
+    var totalIncomes = ReportHelper.getTotalIncomes(widget.report);
+
+    widget.report.estimatedEndOfMonth =
+        (widget.report.startOfMonth + totalIncomes) - totalExpenses;
+  }
+
+  @override
+  void didUpdateWidget(ReportTotals oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _updateCurrentAmount();
+    _updateEstimatedEndOfMonth();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // _updateCurrentAmount();
-    // _updateEstimatedEndOfMonth();
-
     return Column(
       children: [
         Center(
             child: Column(children: [
           Text("Current", style: TextStyle(fontSize: 18)),
           Divider(color: Colors.transparent, height: 4),
-          Text("${report.currentAmount.toCurrency()}",
+          Text("${widget.report.currentAmount.toCurrency()}",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))
         ])),
         Row(
           children: [
             TextButton(
-              child: Text("${report.startOfMonth.toCurrency()}"),
+              child: Text("${widget.report.startOfMonth.toCurrency()}"),
               onPressed: _updateStartOfMonth,
             ),
             Spacer(),
             Padding(
                 padding: EdgeInsets.only(right: 12),
-                child: Text("${report.estimatedEndOfMonth.toCurrency()}"))
+                child:
+                    Text("${widget.report.estimatedEndOfMonth.toCurrency()}"))
           ],
         )
       ],

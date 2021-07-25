@@ -14,20 +14,23 @@ class ReportTransactionList extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ReportTransactionListState createState() =>
-      _ReportTransactionListState(list);
+  _ReportTransactionListState createState() => _ReportTransactionListState();
 }
 
 class _ReportTransactionListState extends State<ReportTransactionList> {
-  late List<Transaction> _list;
   double _totalProcessed = 0;
   double _totalRemaining = 0;
 
-  _ReportTransactionListState(this._list);
-
   void _updateTotals() {
-    _totalProcessed = TransactionHelper.getTotalProcessed(_list);
-    _totalRemaining = TransactionHelper.getTotalRemainder(_list);
+    _totalProcessed = TransactionHelper.getTotalProcessed(widget.list);
+    _totalRemaining = TransactionHelper.getTotalRemainder(widget.list);
+  }
+
+  @override
+  void didUpdateWidget(ReportTransactionList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _updateTotals();
   }
 
   @override
@@ -36,39 +39,39 @@ class _ReportTransactionListState extends State<ReportTransactionList> {
       Text("Processed: ${_totalProcessed.toCurrency()}"),
       Text("Remaining: ${_totalRemaining.toCurrency()}"),
       Expanded(
-          child: _list.length > 0
+          child: widget.list.length > 0
               ? ListView.builder(
-                  itemCount: _list.length,
+                  itemCount: widget.list.length,
                   itemBuilder: (_, index) {
                     var textStyle = TextStyle(
-                        color: _list[index].isProcessed
+                        color: widget.list[index].isProcessed
                             ? Colors.white
                             : Colors.black);
 
                     return Card(
-                        color: _list[index].isProcessed
+                        color: widget.list[index].isProcessed
                             ? Colors.red
                             : Colors.white,
                         child: ListTile(
                             title: Text(
-                              "${_list[index].name}",
+                              "${widget.list[index].name}",
                               style: textStyle,
                             ),
                             trailing: Text(
-                              "${_list[index].price.toCurrency()}",
+                              "${widget.list[index].price.toCurrency()}",
                               style: textStyle,
                             ),
                             onTap: () {
                               setState(() {
-                                _list[index].isProcessed =
-                                    !_list[index].isProcessed;
+                                widget.list[index].isProcessed =
+                                    !widget.list[index].isProcessed;
                                 _updateTotals();
                               });
                               widget.onListChanged();
                             },
                             onLongPress: () {
                               setState(() {
-                                _list.removeAt(index);
+                                widget.list.removeAt(index);
                                 _updateTotals();
                               });
                               widget.onListChanged();
