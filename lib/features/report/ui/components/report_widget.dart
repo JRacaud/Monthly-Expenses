@@ -11,12 +11,14 @@ class ReportWidget extends StatefulWidget {
   final TransactionType type;
   final TransactionOccurence occurence;
   final ValueChanged onStartOfMonthChanged;
+  final VoidCallback onTransactionsChanged;
 
   ReportWidget({
     required this.report,
     required this.type,
     required this.occurence,
     required this.onStartOfMonthChanged,
+    required this.onTransactionsChanged,
   });
 
   @override
@@ -53,8 +55,10 @@ class _ReportWidgetState extends State<ReportWidget> {
           Expanded(
               child: ReportTransactionList(
                   list: _list,
-                  onListChanged: () {
-                    setState(() {});
+                  onTransactionsChanged: () {
+                    setState(() {
+                      widget.onTransactionsChanged();
+                    });
                   })),
         ],
       ),

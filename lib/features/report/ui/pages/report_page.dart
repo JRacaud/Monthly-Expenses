@@ -83,6 +83,10 @@ class _ReportPageState extends State<ReportPage> {
             setState(() {
               _report.startOfMonth = value;
             });
+            _reportService.saveReport(_report);
+          },
+          onTransactionsChanged: () {
+            _reportService.saveReport(_report);
           }),
       bottomSheet: ReportTransactionSelection(
         onTransactionOccurenceSelected: (occurence) {
@@ -109,6 +113,7 @@ class _ReportPageState extends State<ReportPage> {
                     ReportHelper.addTransaction(_report, transaction,
                         _transactionType, _transactionOccurence);
                   });
+                  _reportService.saveReport(_report);
                 },
               );
             }),

@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 
 class ReportTransactionList extends StatefulWidget {
   final List<Transaction> list;
-  final VoidCallback onListChanged;
+  final VoidCallback onTransactionsChanged;
 
   const ReportTransactionList({
     Key? key,
     required this.list,
-    required this.onListChanged,
+    required this.onTransactionsChanged,
   }) : super(key: key);
 
   @override
@@ -67,14 +67,14 @@ class _ReportTransactionListState extends State<ReportTransactionList> {
                                     !widget.list[index].isProcessed;
                                 _updateTotals();
                               });
-                              widget.onListChanged();
+                              widget.onTransactionsChanged();
                             },
                             onLongPress: () {
                               setState(() {
                                 widget.list.removeAt(index);
                                 _updateTotals();
                               });
-                              widget.onListChanged();
+                              widget.onTransactionsChanged();
                             }));
                   })
               : Center(child: Text("No transactions"))),
