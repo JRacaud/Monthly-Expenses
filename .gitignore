@@ -46,4 +46,4 @@ app.*.map.json
 /android/app/release
 
 # Assets
-assets/config/app_settings.json
+assets/cfg/app_settings.json
