@@ -1,6 +1,6 @@
 import 'package:appwrite/appwrite.dart';
-import 'package:finance/config/app_constants.dart';
-import 'package:finance/features/appwrite/models/appwrite_settings.dart';
+import 'package:monthly_expenses/config/app_constants.dart';
+import 'package:monthly_expenses/features/appwrite/models/appwrite_settings.dart';
 import 'package:global_configuration/global_configuration.dart';
 
 class Appwrite {

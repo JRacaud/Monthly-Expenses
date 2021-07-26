@@ -1,6 +1,6 @@
 {
-    "name": "finance",
-    "short_name": "finance",
+    "name": "Monthly Expenses",
+    "short_name": "Monthly Expenses",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

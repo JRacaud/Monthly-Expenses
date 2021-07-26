@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:finance/config/app_constants.dart';
-import 'package:finance/features/report/models/report.dart';
+import 'package:monthly_expenses/config/app_constants.dart';
+import 'package:monthly_expenses/features/report/models/report.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 

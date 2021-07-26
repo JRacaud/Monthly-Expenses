@@ -1,4 +1,4 @@
-import 'package:finance/features/report/models/transaction.dart';
+import 'package:monthly_expenses/features/report/models/transaction.dart';
 import 'package:flutter/material.dart';
 
 class ReportTransactionSelection extends StatefulWidget {

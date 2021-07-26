@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 project(finance LANGUAGES CXX)
 
-set(BINARY_NAME "Finance")
+set(BINARY_NAME "MonthlyExpenses")
 
 cmake_policy(SET CMP0063 NEW)
 

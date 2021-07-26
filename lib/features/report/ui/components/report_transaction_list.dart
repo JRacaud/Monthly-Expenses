@@ -1,6 +1,6 @@
-import 'package:finance/extensions/double_extensions.dart';
-import 'package:finance/features/report/helpers/transaction_helper.dart';
-import 'package:finance/features/report/models/transaction.dart';
+import 'package:monthly_expenses/extensions/double_extensions.dart';
+import 'package:monthly_expenses/features/report/helpers/transaction_helper.dart';
+import 'package:monthly_expenses/features/report/models/transaction.dart';
 import 'package:flutter/material.dart';
 
 class ReportTransactionList extends StatefulWidget {

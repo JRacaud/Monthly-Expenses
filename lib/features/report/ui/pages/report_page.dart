@@ -1,11 +1,11 @@
-import 'package:finance/extensions/dart_time_extensions.dart';
-import 'package:finance/features/report/helpers/report_helper.dart';
-import 'package:finance/features/report/models/report.dart';
-import 'package:finance/features/report/models/transaction.dart';
-import 'package:finance/features/report/services/local_report_service.dart';
-import 'package:finance/features/report/ui/components/report_add_transaction_form_dialog.dart';
-import 'package:finance/features/report/ui/components/report_transaction_selection.dart';
-import 'package:finance/features/report/ui/components/report_widget.dart';
+import 'package:monthly_expenses/extensions/dart_time_extensions.dart';
+import 'package:monthly_expenses/features/report/helpers/report_helper.dart';
+import 'package:monthly_expenses/features/report/models/report.dart';
+import 'package:monthly_expenses/features/report/models/transaction.dart';
+import 'package:monthly_expenses/features/report/services/local_report_service.dart';
+import 'package:monthly_expenses/features/report/ui/components/report_add_transaction_form_dialog.dart';
+import 'package:monthly_expenses/features/report/ui/components/report_transaction_selection.dart';
+import 'package:monthly_expenses/features/report/ui/components/report_widget.dart';
 import 'package:flutter/material.dart';
 
 class ReportPage extends StatefulWidget {

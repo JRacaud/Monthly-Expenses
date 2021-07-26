@@ -1,16 +1,13 @@
-# finance
+# Monthly Expenses
 
-A new Flutter project.
+A simple application that helps you track your monthly expenses and incomes.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- List fixed/recurring expenses.
+- List fixed/recurring incomes.
+- List extra/unique expenses.
+- List extra/unique incomes.
+- Modify the amount of money at the start of the month.
+- Calculate the current amount of money.
+- Calculate the estimated amount of money at the end of the month.

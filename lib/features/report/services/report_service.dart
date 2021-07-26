@@ -1,4 +1,4 @@
-import 'package:finance/features/report/models/report.dart';
+import 'package:monthly_expenses/features/report/models/report.dart';
 
 abstract class ReportService {
   Future<Report> getReport(DateTime date);

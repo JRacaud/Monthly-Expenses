@@ -1,4 +1,4 @@
-import 'package:finance/config/app_constants.dart';
+import 'package:monthly_expenses/config/app_constants.dart';
 import 'package:intl/intl.dart';
 
 extension DateTimeExtensions on DateTime {

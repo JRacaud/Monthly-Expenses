@@ -1,5 +1,5 @@
-name: finance
-description: A simple app to manage finance.
+name: monthly_expenses
+description: A simple app to manage your monthly expenses and incomes.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.

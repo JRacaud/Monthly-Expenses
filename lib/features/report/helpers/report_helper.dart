@@ -1,6 +1,6 @@
-import 'package:finance/features/report/helpers/transaction_helper.dart';
-import 'package:finance/features/report/models/report.dart';
-import 'package:finance/features/report/models/transaction.dart';
+import 'package:monthly_expenses/features/report/helpers/transaction_helper.dart';
+import 'package:monthly_expenses/features/report/models/report.dart';
+import 'package:monthly_expenses/features/report/models/transaction.dart';
 import 'package:intl/intl.dart';
 
 class ReportHelper {

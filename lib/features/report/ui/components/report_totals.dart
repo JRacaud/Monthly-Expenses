@@ -1,7 +1,7 @@
-import 'package:finance/features/report/helpers/report_helper.dart';
-import 'package:finance/features/report/models/report.dart';
+import 'package:monthly_expenses/features/report/helpers/report_helper.dart';
+import 'package:monthly_expenses/features/report/models/report.dart';
 import 'package:flutter/material.dart';
-import 'package:finance/extensions/double_extensions.dart';
+import 'package:monthly_expenses/extensions/double_extensions.dart';
 
 class ReportTotals extends StatefulWidget {
   final Report report;
