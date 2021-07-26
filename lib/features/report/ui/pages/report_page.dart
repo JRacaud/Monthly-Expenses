@@ -104,6 +104,7 @@ class _ReportPageState extends State<ReportPage> {
           });
         },
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () => showDialog(
             context: context,
