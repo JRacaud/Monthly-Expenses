@@ -30,6 +30,8 @@ class _ReportTotalsState extends State<ReportTotals> {
               children: [
                 Text("Amount at the start of the month:"),
                 TextFormField(
+                  autofocus: true,
+                  keyboardType: TextInputType.number,
                   onSaved: (value) {
                     setState(() {
                       widget.onStartAmountChanged(double.parse(value!));
