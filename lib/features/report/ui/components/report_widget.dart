@@ -55,6 +55,7 @@ class _ReportWidgetState extends State<ReportWidget> {
           Expanded(
               child: ReportTransactionList(
                   list: _list,
+                  type: widget.type,
                   onTransactionsChanged: () {
                     setState(() {
                       widget.onTransactionsChanged();

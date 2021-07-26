@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 class ReportTransactionList extends StatefulWidget {
   final List<Transaction> list;
   final VoidCallback onTransactionsChanged;
+  final TransactionType type;
 
   const ReportTransactionList({
     Key? key,
     required this.list,
     required this.onTransactionsChanged,
+    required this.type,
   }) : super(key: key);
 
   @override
@@ -36,8 +38,24 @@ class _ReportTransactionListState extends State<ReportTransactionList> {
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Text("Processed: ${_totalProcessed.toCurrency()}"),
-      Text("Remaining: ${_totalRemaining.toCurrency()}"),
+      Row(
+        children: [
+          Card(
+            child: Padding(
+              child: Text("Processed: ${_totalProcessed.toCurrency()}"),
+              padding: EdgeInsets.all(15.0),
+            ),
+            margin: EdgeInsets.all(20.0),
+          ),
+          Spacer(),
+          Card(
+              child: Padding(
+                child: Text("Remaining: ${_totalRemaining.toCurrency()}"),
+                padding: EdgeInsets.all(15.0),
+              ),
+              margin: EdgeInsets.all(20.0)),
+        ],
+      ),
       Expanded(
           child: widget.list.length > 0
               ? ListView.builder(
@@ -50,7 +68,9 @@ class _ReportTransactionListState extends State<ReportTransactionList> {
 
                     return Card(
                         color: widget.list[index].isProcessed
-                            ? Colors.red
+                            ? (widget.type == TransactionType.Expenses)
+                                ? Colors.red
+                                : Colors.green
                             : Colors.white,
                         child: ListTile(
                             title: Text(
