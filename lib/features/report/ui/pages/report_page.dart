@@ -92,7 +92,7 @@ class _ReportPageState extends State<ReportPage> {
           onTransactionsChanged: () {
             _reportService.saveReport(_report);
           }),
-      bottomSheet: ReportTransactionSelection(
+      bottomNavigationBar: ReportTransactionSelection(
         onTransactionOccurenceSelected: (occurence) {
           setState(() {
             _transactionOccurence = occurence;
