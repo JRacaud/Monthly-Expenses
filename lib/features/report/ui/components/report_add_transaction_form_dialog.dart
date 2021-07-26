@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 
 class ReportAddTransactionFormDialog extends StatefulWidget {
   const ReportAddTransactionFormDialog(
-      {Key? key, required this.onTransactionAdded})
+      {Key? key, required this.onTransactionAdded, required this.occurence})
       : super(key: key);
 
+  final TransactionOccurence occurence;
   final ValueChanged<Transaction> onTransactionAdded;
 
   @override
@@ -63,18 +64,20 @@ class _ReportAddTransactionFormDialogState
                     )),
                 Padding(
                     padding: EdgeInsets.all(8),
-                    child: Row(children: [
-                      Text("Is Processed:"),
-                      StatefulBuilder(builder: (ctx, setState) {
-                        return Checkbox(
-                            value: _transaction.isProcessed,
-                            onChanged: (value) {
-                              setState(() {
-                                _transaction.isProcessed = value!;
-                              });
-                            });
-                      })
-                    ])),
+                    child: widget.occurence == TransactionOccurence.Repeating
+                        ? Row(children: [
+                            Text("Is Processed:"),
+                            StatefulBuilder(builder: (ctx, setState) {
+                              return Checkbox(
+                                  value: _transaction.isProcessed,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _transaction.isProcessed = value!;
+                                    });
+                                  });
+                            })
+                          ])
+                        : null),
                 Padding(
                     padding: EdgeInsets.all(8),
                     child: Center(
@@ -83,8 +86,15 @@ class _ReportAddTransactionFormDialogState
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();
+                                var isProcessed = _transaction.isProcessed;
+
+                                if (widget.occurence ==
+                                    TransactionOccurence.Unique)
+                                  _transaction.isProcessed = true;
+
                                 widget.onTransactionAdded(_transaction);
                                 _transaction = Transaction.empty();
+                                _transaction.isProcessed = isProcessed;
                               }
                             })))
               ])),

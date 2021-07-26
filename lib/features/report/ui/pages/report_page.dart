@@ -110,6 +110,7 @@ class _ReportPageState extends State<ReportPage> {
             context: context,
             builder: (context) {
               return ReportAddTransactionFormDialog(
+                occurence: _transactionOccurence,
                 onTransactionAdded: (transaction) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       duration: Duration(milliseconds: 500),
