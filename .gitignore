@@ -45,5 +45,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Assets
+# Private
+android/key.properties
 assets/cfg/app_settings.json
