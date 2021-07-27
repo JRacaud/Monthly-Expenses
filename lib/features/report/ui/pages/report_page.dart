@@ -1,3 +1,5 @@
+import 'package:monthly_expenses/common/widgets/action_fab.dart';
+import 'package:monthly_expenses/common/widgets/expandable_fab.dart';
 import 'package:monthly_expenses/extensions/dart_time_extensions.dart';
 import 'package:monthly_expenses/features/report/helpers/report_helper.dart';
 import 'package:monthly_expenses/features/report/models/report.dart';
@@ -56,6 +58,28 @@ class _ReportPageState extends State<ReportPage> {
       (_report.month != 0) &&
       ReportHelper.getDateTime(_report).isSameYearMonth(_currentDate);
 
+  void _showAddTransactionDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return ReportAddTransactionFormDialog(
+            occurence: _transactionOccurence,
+            onTransactionAdded: (transaction) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  duration: Duration(milliseconds: 500),
+                  content: Text("Transaction Added")));
+              setState(() {
+                ReportHelper.addTransaction(_report, transaction,
+                    _transactionType, _transactionOccurence);
+              });
+              _reportService.saveReport(_report);
+            },
+          );
+        });
+  }
+
+  void _copyPreviousMonth() {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,25 +129,34 @@ class _ReportPageState extends State<ReportPage> {
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => showDialog(
-            context: context,
-            builder: (context) {
-              return ReportAddTransactionFormDialog(
-                occurence: _transactionOccurence,
-                onTransactionAdded: (transaction) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      duration: Duration(milliseconds: 500),
-                      content: Text("Transaction Added")));
-                  setState(() {
-                    ReportHelper.addTransaction(_report, transaction,
-                        _transactionType, _transactionOccurence);
-                  });
-                  _reportService.saveReport(_report);
-                },
-              );
-            }),
-        child: const Icon(Icons.add),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () => showDialog(
+      //       context: context,
+      //       builder: (context) {
+      //         return ReportAddTransactionFormDialog(
+      //           occurence: _transactionOccurence,
+      //           onTransactionAdded: (transaction) {
+      //             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      //                 duration: Duration(milliseconds: 500),
+      //                 content: Text("Transaction Added")));
+      //             setState(() {
+      //               ReportHelper.addTransaction(_report, transaction,
+      //                   _transactionType, _transactionOccurence);
+      //             });
+      //             _reportService.saveReport(_report);
+      //           },
+      //         );
+      //       }),
+      //   child: const Icon(Icons.add),
+      // ),
+      floatingActionButton: ExpandableFab(
+        distance: 112.0,
+        children: [
+          ActionFab(
+              onPressed: _showAddTransactionDialog,
+              icon: const Icon(Icons.add)),
+          ActionFab(onPressed: _copyPreviousMonth, icon: const Icon(Icons.copy))
+        ],
       ),
     );
   }
