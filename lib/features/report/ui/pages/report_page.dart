@@ -78,7 +78,16 @@ class _ReportPageState extends State<ReportPage> {
         });
   }
 
-  void _copyPreviousMonth() {}
+  void _copyPreviousMonth() async {
+    var previousReport = await _reportService.getPreviousReport(_report);
+
+    setState(() {
+      _report.fixedExpenses
+          .addAll(new List<Transaction>.from(previousReport.fixedExpenses));
+      _report.fixedIncomes
+          .addAll(new List<Transaction>.from(previousReport.fixedIncomes));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,29 +137,8 @@ class _ReportPageState extends State<ReportPage> {
           });
         },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () => showDialog(
-      //       context: context,
-      //       builder: (context) {
-      //         return ReportAddTransactionFormDialog(
-      //           occurence: _transactionOccurence,
-      //           onTransactionAdded: (transaction) {
-      //             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      //                 duration: Duration(milliseconds: 500),
-      //                 content: Text("Transaction Added")));
-      //             setState(() {
-      //               ReportHelper.addTransaction(_report, transaction,
-      //                   _transactionType, _transactionOccurence);
-      //             });
-      //             _reportService.saveReport(_report);
-      //           },
-      //         );
-      //       }),
-      //   child: const Icon(Icons.add),
-      // ),
       floatingActionButton: ExpandableFab(
-        distance: 112.0,
+        distance: 80.0,
         children: [
           ActionFab(
               onPressed: _showAddTransactionDialog,

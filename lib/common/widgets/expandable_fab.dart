@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:monthly_expenses/common/widgets/action_fab.dart';
 
 class ExpandableFab extends StatefulWidget {
   const ExpandableFab(
@@ -132,7 +133,7 @@ class _ExpandableFabState extends State<ExpandableFab>
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return SizedBox.expand(
       child: Stack(
         alignment: Alignment.bottomRight,
         clipBehavior: Clip.none,
