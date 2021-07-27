@@ -71,8 +71,8 @@ class _ReportPageState extends State<ReportPage> {
               setState(() {
                 ReportHelper.addTransaction(_report, transaction,
                     _transactionType, _transactionOccurence);
+                _reportService.saveReport(_report);
               });
-              _reportService.saveReport(_report);
             },
           );
         });
@@ -86,6 +86,7 @@ class _ReportPageState extends State<ReportPage> {
           .addAll(new List<Transaction>.from(previousReport.fixedExpenses));
       _report.fixedIncomes
           .addAll(new List<Transaction>.from(previousReport.fixedIncomes));
+      _reportService.saveReport(_report);
     });
   }
 
