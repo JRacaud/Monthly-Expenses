@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:monthly_expenses/features/report/helpers/report_helper.dart';
 import 'package:monthly_expenses/features/report/models/report.dart';
-import 'package:flutter/material.dart';
 import 'package:monthly_expenses/extensions/double_extensions.dart';
 
 class ReportTotals extends StatefulWidget {
@@ -28,7 +29,7 @@ class _ReportTotalsState extends State<ReportTotals> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("Amount at the start of the month:"),
+                Text("${AppLocalizations.of(context)!.amountStartOfMonth}:"),
                 TextFormField(
                   autofocus: true,
                   keyboardType: TextInputType.number,
@@ -41,14 +42,14 @@ class _ReportTotalsState extends State<ReportTotals> {
                     var val = double.tryParse(value!);
 
                     if (value.isEmpty || (val == null) || val < 0)
-                      return "Invalid amount";
+                      return AppLocalizations.of(context)!.invalidAmount;
                     else
                       return null;
                   },
                 ),
                 Divider(color: Colors.transparent, height: 18),
                 ElevatedButton(
-                    child: Text("Set amount"),
+                    child: Text(AppLocalizations.of(context)!.setAmount),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
@@ -91,7 +92,8 @@ class _ReportTotalsState extends State<ReportTotals> {
       children: [
         Center(
             child: Column(children: [
-          Text("Current", style: TextStyle(fontSize: 18)),
+          Text(AppLocalizations.of(context)!.current,
+              style: TextStyle(fontSize: 18)),
           Divider(color: Colors.transparent, height: 4),
           Text("${widget.report.currentAmount.toCurrency()}",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))

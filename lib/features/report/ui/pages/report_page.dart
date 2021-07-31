@@ -9,6 +9,7 @@ import 'package:monthly_expenses/features/report/ui/components/report_add_transa
 import 'package:monthly_expenses/features/report/ui/components/report_transaction_selection.dart';
 import 'package:monthly_expenses/features/report/ui/components/report_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReportPage extends StatefulWidget {
   const ReportPage({Key? key}) : super(key: key);
@@ -67,7 +68,8 @@ class _ReportPageState extends State<ReportPage> {
             onTransactionAdded: (transaction) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   duration: Duration(milliseconds: 500),
-                  content: Text("Transaction Added")));
+                  content:
+                      Text(AppLocalizations.of(context)!.transactionAdded)));
               setState(() {
                 ReportHelper.addTransaction(_report, transaction,
                     _transactionType, _transactionOccurence);
@@ -140,6 +142,11 @@ class _ReportPageState extends State<ReportPage> {
       ),
       floatingActionButton: ExpandableFab(
         distance: 80.0,
+        openIcon: Icon(Icons.menu),
+        closeIcon: Icon(
+          Icons.close,
+          color: Theme.of(context).primaryColor,
+        ),
         children: [
           ActionFab(
               onPressed: _showAddTransactionDialog,
