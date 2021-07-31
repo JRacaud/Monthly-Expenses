@@ -1,5 +1,6 @@
 import 'package:monthly_expenses/features/report/models/transaction.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReportTransactionSelection extends StatefulWidget {
   const ReportTransactionSelection({
@@ -29,9 +30,12 @@ class _ReportTransactionSelectionState
         child: BottomNavigationBar(
             elevation: 5,
             items: [
-              BottomNavigationBarItem(icon: Icon(Icons.repeat), label: "Fixed"),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.repeat_one), label: "Extra")
+                  icon: Icon(Icons.repeat),
+                  label: AppLocalizations.of(context)!.fixed),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.repeat_one),
+                  label: AppLocalizations.of(context)!.extra)
             ],
             currentIndex: _occurrenceIndex,
             onTap: (index) {
@@ -44,9 +48,12 @@ class _ReportTransactionSelectionState
       ),
       BottomNavigationBar(
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.outbond), label: "Expenses"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.attach_money), label: "Incomes")
+              icon: Icon(Icons.outbond),
+              label: AppLocalizations.of(context)!.expenses),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.attach_money),
+              label: AppLocalizations.of(context)!.incomes)
         ],
         currentIndex: _typeIndex,
         onTap: (index) {

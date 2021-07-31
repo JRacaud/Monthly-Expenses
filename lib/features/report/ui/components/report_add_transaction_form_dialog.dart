@@ -1,5 +1,6 @@
 import 'package:monthly_expenses/features/report/models/transaction.dart';
 import 'package:monthly_expenses/features/report/validators/transaction_validator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class ReportAddTransactionFormDialog extends StatefulWidget {
@@ -31,7 +32,7 @@ class _ReportAddTransactionFormDialogState
               children: [
                 Center(
                     child: Text(
-                  "Add transaction",
+                  AppLocalizations.of(context)!.addTransaction,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 )),
                 Padding(
@@ -39,7 +40,7 @@ class _ReportAddTransactionFormDialogState
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Name:"),
+                        Text("${AppLocalizations.of(context)!.name}:"),
                         TextFormField(
                             keyboardType: TextInputType.text,
                             validator: TransactionValidator.validateName,
@@ -53,7 +54,7 @@ class _ReportAddTransactionFormDialogState
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Price:"),
+                        Text("${AppLocalizations.of(context)!.price}"),
                         TextFormField(
                           keyboardType: TextInputType.number,
                           validator: TransactionValidator.validatePrice,
@@ -66,7 +67,7 @@ class _ReportAddTransactionFormDialogState
                     padding: EdgeInsets.all(8),
                     child: widget.occurence == TransactionOccurence.Repeating
                         ? Row(children: [
-                            Text("Is Processed:"),
+                            Text("${AppLocalizations.of(context)!.processed}:"),
                             StatefulBuilder(builder: (ctx, setState) {
                               return Checkbox(
                                   value: _transaction.isProcessed,
@@ -82,7 +83,8 @@ class _ReportAddTransactionFormDialogState
                     padding: EdgeInsets.all(8),
                     child: Center(
                         child: ElevatedButton(
-                            child: Text("Add Transaction"),
+                            child: Text(
+                                "${AppLocalizations.of(context)!.addTransaction}"),
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();

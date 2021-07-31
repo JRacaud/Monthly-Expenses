@@ -1,6 +1,7 @@
 import 'package:monthly_expenses/extensions/double_extensions.dart';
 import 'package:monthly_expenses/features/report/helpers/transaction_helper.dart';
 import 'package:monthly_expenses/features/report/models/transaction.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class ReportTransactionList extends StatefulWidget {
@@ -42,7 +43,8 @@ class _ReportTransactionListState extends State<ReportTransactionList> {
         children: [
           Card(
             child: Padding(
-              child: Text("Processed: ${_totalProcessed.toCurrency()}"),
+              child: Text(
+                  "${AppLocalizations.of(context)!.processed}: ${_totalProcessed.toCurrency()}"),
               padding: EdgeInsets.all(15.0),
             ),
             margin: EdgeInsets.all(20.0),
@@ -50,7 +52,8 @@ class _ReportTransactionListState extends State<ReportTransactionList> {
           Spacer(),
           Card(
               child: Padding(
-                child: Text("Remaining: ${_totalRemaining.toCurrency()}"),
+                child: Text(
+                    "${AppLocalizations.of(context)!.remaining}: ${_totalRemaining.toCurrency()}"),
                 padding: EdgeInsets.all(15.0),
               ),
               margin: EdgeInsets.all(20.0)),
@@ -97,7 +100,8 @@ class _ReportTransactionListState extends State<ReportTransactionList> {
                               widget.onTransactionsChanged();
                             }));
                   })
-              : Center(child: Text("No transactions"))),
+              : Center(
+                  child: Text(AppLocalizations.of(context)!.noTransactions))),
     ]);
   }
 }
