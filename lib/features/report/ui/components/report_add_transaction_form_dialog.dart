@@ -54,7 +54,7 @@ class _ReportAddTransactionFormDialogState
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("${AppLocalizations.of(context)!.price}"),
+                        Text("${AppLocalizations.of(context)!.price}:"),
                         TextFormField(
                           keyboardType: TextInputType.number,
                           validator: TransactionValidator.validatePrice,
