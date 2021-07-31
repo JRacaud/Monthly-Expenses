@@ -13,5 +13,6 @@
     "name": "Nom",
     "setAmount": "Fixer le montant",
     "invalidAmount": "Montant invalide",
-    "current": "Solde"
+    "current": "Solde",
+    "transactionAdded": "Transaction ajoutée"
 }

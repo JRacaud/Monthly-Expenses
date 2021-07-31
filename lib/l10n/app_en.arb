@@ -13,5 +13,6 @@
     "name": "Name",
     "setAmount": "Set amount",
     "invalidAmount": "Invalid amount",
-    "current": "Current"
+    "current": "Current",
+    "transactionAdded": "Transaction Added"
 }
