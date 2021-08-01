@@ -4,6 +4,7 @@ import 'package:monthly_expenses/config/app_constants.dart';
 import 'package:monthly_expenses/features/report/models/report.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'report_service.dart';
 
@@ -59,16 +60,33 @@ class LocalReportService implements ReportService {
   }
 
   Future<File> _getReportFile(DateTime date) async {
-    Directory? appDataDir;
-
-    if (Platform.isAndroid) appDataDir = await getExternalStorageDirectory();
-
-    if (!Platform.isAndroid || (appDataDir == null))
-      appDataDir = await getApplicationDocumentsDirectory();
+    var appDataDir = await _getSaveDirectory();
 
     var formatter = DateFormat(reportDateFormat);
     var filename = "reports/${formatter.format(date)}_finance_report.json";
 
     return File("${appDataDir.path}/$filename");
+  }
+
+  Future<Directory> _getSaveDirectory() async {
+    var storageRequest = await Permission.storage.request();
+
+    if (storageRequest.isDenied || !Platform.isAndroid)
+      return await getApplicationDocumentsDirectory();
+
+    var appName = "MonthlyExpenses";
+
+    var externalPath = await getExternalStorageDirectory();
+    var pathList = externalPath!.path.split('/');
+    var androidDirPos = pathList.indexOf('Android');
+    var rootPath = pathList.sublist(0, androidDirPos).join('/');
+
+    var appDir = Directory("$rootPath/$appName");
+
+    if (appDir.existsSync()) {
+      appDir.createSync(recursive: true);
+    }
+
+    return appDir;
   }
 }

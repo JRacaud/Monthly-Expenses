@@ -1,5 +1,7 @@
-import 'package:monthly_expenses/features/report/ui/pages/report_page.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:monthly_expenses/features/report/ui/pages/report_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class App extends StatefulWidget {
   @override
@@ -9,6 +11,16 @@ class App extends StatefulWidget {
 class _AppState extends State {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Monthly Expenses', home: ReportPage());
+    return const MaterialApp(
+      title: 'Monthly Expenses',
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate
+      ],
+      supportedLocales: [Locale('en', ''), Locale('fr', '')],
+      home: ReportPage(),
+    );
   }
 }

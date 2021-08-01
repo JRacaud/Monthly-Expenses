@@ -1,19 +1,21 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:monthly_expenses/common/widgets/action_fab.dart';
 
 class ExpandableFab extends StatefulWidget {
-  const ExpandableFab(
-      {Key? key,
-      this.initialOpen,
-      required this.distance,
-      required this.children})
-      : super(key: key);
+  const ExpandableFab({
+    Key? key,
+    this.initialOpen,
+    required this.distance,
+    required this.children,
+    required this.openIcon,
+    required this.closeIcon,
+  }) : super(key: key);
 
   final bool? initialOpen;
   final double distance;
   final List<Widget> children;
+  final Icon openIcon;
+  final Icon closeIcon;
 
   @override
   _ExpandableFabState createState() => _ExpandableFabState();
@@ -61,23 +63,22 @@ class _ExpandableFabState extends State<ExpandableFab>
 
   Widget _buildTapToCloseFab() {
     return SizedBox(
-      width: 56,
-      height: 56,
-      child: Center(
-        child: Material(
-          shape: const CircleBorder(),
-          clipBehavior: Clip.antiAlias,
-          elevation: 4.0,
-          child: InkWell(
-            onTap: _toggle,
-            child: Padding(
+        width: 56,
+        height: 56,
+        child: Center(
+          child: Material(
+            shape: const CircleBorder(),
+            clipBehavior: Clip.antiAlias,
+            elevation: 4.0,
+            child: InkWell(
+              onTap: _toggle,
+              child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child:
-                    Icon(Icons.close, color: Theme.of(context).primaryColor)),
+                child: widget.closeIcon,
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget _buildTapToOpenFab() {
@@ -98,7 +99,7 @@ class _ExpandableFabState extends State<ExpandableFab>
               duration: const Duration(milliseconds: 250),
               child: FloatingActionButton(
                 onPressed: _toggle,
-                child: Icon(Icons.edit),
+                child: widget.openIcon,
               )),
         ));
   }

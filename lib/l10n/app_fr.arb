@@ -1,0 +1,18 @@
+{
+    "fixed": "Fixe",
+    "extra": "Unique",
+    "expenses": "Dépenses",
+    "incomes": "Revenus",
+    "processed": "Pointé",
+    "remaining": "À pointer",
+    "noTransactions": "Aucune transactions",
+    "amountStartOfMonth": "Montant au début du mois",
+    "addTransaction": "Ajouter transaction",
+    "isProcessed": "Pointé",
+    "price": "Montant",
+    "name": "Nom",
+    "setAmount": "Fixer le montant",
+    "invalidAmount": "Montant invalide",
+    "current": "Solde",
+    "transactionAdded": "Transaction ajoutée"
+}
