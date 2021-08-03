@@ -19,7 +19,14 @@ class _AppState extends State {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate
       ],
-      supportedLocales: [Locale('en', ''), Locale('fr', '')],
+      supportedLocales: [
+        Locale('en', ''),
+        Locale('fr', ''),
+        Locale.fromSubtags(languageCode: 'zh'),
+        Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
+        Locale.fromSubtags(
+            languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
+      ],
       home: ReportPage(),
     );
   }
