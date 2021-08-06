@@ -100,15 +100,24 @@ class _ReportTotalsState extends State<ReportTotals> {
         ])),
         Row(
           children: [
-            TextButton(
-              child: Text("${widget.report.startOfMonth.toCurrency()}"),
-              onPressed: _updateStartOfMonth,
+            Column(
+              children: [
+                Text("${AppLocalizations.of(context)!.startOfMonth}"),
+                TextButton(
+                  child: Text("${widget.report.startOfMonth.toCurrency()}"),
+                  onPressed: _updateStartOfMonth,
+                ),
+              ],
             ),
             Spacer(),
             Padding(
                 padding: EdgeInsets.only(right: 12),
-                child:
-                    Text("${widget.report.estimatedEndOfMonth.toCurrency()}"))
+                child: Column(
+                  children: [
+                    Text("${AppLocalizations.of(context)!.endOfMonth}"),
+                    Text("${widget.report.estimatedEndOfMonth.toCurrency()}"),
+                  ],
+                ))
           ],
         )
       ],

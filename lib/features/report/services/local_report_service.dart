@@ -69,9 +69,11 @@ class LocalReportService implements ReportService {
   }
 
   Future<Directory> _getSaveDirectory() async {
+    if (!Platform.isAndroid) return await getApplicationDocumentsDirectory();
+
     var storageRequest = await Permission.storage.request();
 
-    if (storageRequest.isDenied || !Platform.isAndroid)
+    if (storageRequest.isDenied)
       return await getApplicationDocumentsDirectory();
 
     var appName = "MonthlyExpenses";

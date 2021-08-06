@@ -1,0 +1,20 @@
+{
+    "fixed": "固定支出",
+    "extra": "额外支出",
+    "expenses": "花费",
+    "incomes": "收入",
+    "processed": "支出",
+    "remaining": "余额",
+    "noTransactions": "无记录",
+    "amountStartOfMonth": "余额",
+    "addTransaction": "添加交易",
+    "isProcessed": "交易完成",
+    "price": "价格",
+    "name": "名称",
+    "setAmount": "设置数量",
+    "invalidAmount": "无效交易",
+    "current": "现金",
+    "transactionAdded": "交易已添加",
+    "startOfMonth": "月初",
+    "endOfMonth": "月末"
+}

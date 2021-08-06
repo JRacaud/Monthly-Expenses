@@ -14,5 +14,7 @@
     "setAmount": "Fixer le montant",
     "invalidAmount": "Montant invalide",
     "current": "Solde",
-    "transactionAdded": "Transaction ajoutée"
+    "transactionAdded": "Transaction ajoutée",
+    "startOfMonth": "Début du mois",
+    "endOfMonth": "Fin du mois"
 }
