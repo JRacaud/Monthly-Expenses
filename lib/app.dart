@@ -20,9 +20,9 @@ class _AppState extends State {
         GlobalCupertinoLocalizations.delegate
       ],
       supportedLocales: [
-        Locale('en', ''),
-        Locale('fr', ''),
-        Locale.fromSubtags(languageCode: 'zh'),
+        Locale('en', 'US'),
+        Locale('fr', 'FR'),
+        Locale.fromSubtags(languageCode: 'zh', countryCode: 'CN'),
         Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
         Locale.fromSubtags(
             languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
