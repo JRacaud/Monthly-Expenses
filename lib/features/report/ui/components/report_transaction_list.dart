@@ -32,10 +32,12 @@ class _ReportTransactionListState extends State<ReportTransactionList> {
     _totalRemaining = TransactionHelper.getTotalRemainder(widget.list);
   }
 
-  String _getNumberAsCurrency(double number) {
-    return number.toCurrency(
-        App.preferences.getString(SettingsParameters.CurrencySymbol) ??
-            SettingsParameters.DefaultCurrencySymbol);
+  Future<String> _getNumberAsCurrency(double number) async {
+    var prefs = await App.preferences;
+    var symbol = prefs.getString(SettingsParameters.CurrencySymbol);
+
+    return number
+        .toCurrency(symbol ?? SettingsParameters.DefaultCurrencySymbol);
   }
 
   @override
@@ -52,17 +54,28 @@ class _ReportTransactionListState extends State<ReportTransactionList> {
         children: [
           Card(
             child: Padding(
-              child: Text(
-                  "${AppLocalizations.of(context)!.processed}: ${_getNumberAsCurrency(_totalProcessed)}"),
-              padding: EdgeInsets.all(15.0),
-            ),
+                child: FutureBuilder(
+                  future: _getNumberAsCurrency(_totalProcessed),
+                  initialData: "0",
+                  builder: (_, AsyncSnapshot<String> text) {
+                    return Text(
+                        "${AppLocalizations.of(context)!.processed}: ${text.data}");
+                  },
+                ),
+                padding: EdgeInsets.all(15.0)),
             margin: EdgeInsets.all(20.0),
           ),
           Spacer(),
           Card(
               child: Padding(
-                child: Text(
-                    "${AppLocalizations.of(context)!.remaining}: ${_getNumberAsCurrency(_totalRemaining)}"),
+                child: FutureBuilder(
+                  future: _getNumberAsCurrency(_totalRemaining),
+                  initialData: "0",
+                  builder: (_, AsyncSnapshot<String> text) {
+                    return Text(
+                        "${AppLocalizations.of(context)!.remaining}: ${text.data}");
+                  },
+                ),
                 padding: EdgeInsets.all(15.0),
               ),
               margin: EdgeInsets.all(20.0)),
@@ -89,9 +102,16 @@ class _ReportTransactionListState extends State<ReportTransactionList> {
                               "${widget.list[index].name}",
                               style: textStyle,
                             ),
-                            trailing: Text(
-                              "${_getNumberAsCurrency(widget.list[index].price)}",
-                              style: textStyle,
+                            trailing: FutureBuilder(
+                              future: _getNumberAsCurrency(
+                                  widget.list[index].price),
+                              initialData: "0",
+                              builder: (_, AsyncSnapshot<String> text) {
+                                return Text(
+                                  "${text.data}",
+                                  style: textStyle,
+                                );
+                              },
                             ),
                             onTap: () {
                               setState(() {
