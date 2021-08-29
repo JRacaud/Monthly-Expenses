@@ -5,11 +5,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class App extends StatefulWidget {
-  static late SharedPreferences _preferences;
-  static get preferences => _preferences;
-
-  App() {
-    SharedPreferences.getInstance().then((value) => _preferences = value);
+  static Future<SharedPreferences> _preferences =
+      SharedPreferences.getInstance();
+  static Future<SharedPreferences> get preferences {
+    return _preferences;
   }
 
   @override

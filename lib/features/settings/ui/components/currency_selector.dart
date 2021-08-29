@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:monthly_expenses/app.dart';
 import 'package:monthly_expenses/features/settings/settings_parameters.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CurrencySelector extends StatefulWidget {
   @override
@@ -16,15 +15,15 @@ class _CurrencySelectorState extends State<CurrencySelector> {
     "£",
     "¥"
   ];
-  late String _dropDownValue;
 
-  @override
-  void initState() {
-    super.initState();
+  String? _dropDownValue;
 
-    _dropDownValue =
-        App.preferences.getString(SettingsParameters.CurrencySymbol) ??
-            SettingsParameters.DefaultCurrencySymbol;
+  _CurrencySelectorState() {
+    var prefs = App.preferences;
+
+    prefs.then((p) => _dropDownValue =
+        p.getString(SettingsParameters.CurrencySymbol) ??
+            SettingsParameters.DefaultCurrencySymbol);
   }
 
   @override
@@ -41,13 +40,13 @@ class _CurrencySelectorState extends State<CurrencySelector> {
               child: Text(value),
             );
           }).toList(),
-          onChanged: (value) {
+          onChanged: (value) async {
             setState(() {
               _dropDownValue = value!;
             });
 
-            App.preferences
-                .setString(SettingsParameters.CurrencySymbol, value!);
+            var prefs = await App.preferences;
+            prefs.setString(SettingsParameters.CurrencySymbol, value!);
           },
         )
       ],
