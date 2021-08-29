@@ -21,9 +21,10 @@ class _CurrencySelectorState extends State<CurrencySelector> {
   _CurrencySelectorState() {
     var prefs = App.preferences;
 
-    prefs.then((p) => _dropDownValue =
-        p.getString(SettingsParameters.CurrencySymbol) ??
-            SettingsParameters.DefaultCurrencySymbol);
+    prefs.then((p) => setState(() {
+          _dropDownValue = p.getString(SettingsParameters.CurrencySymbol) ??
+              SettingsParameters.DefaultCurrencySymbol;
+        }));
   }
 
   @override
@@ -33,7 +34,7 @@ class _CurrencySelectorState extends State<CurrencySelector> {
         Text("${AppLocalizations.of(context)?.selectCurrency}"),
         Spacer(),
         DropdownButton<String>(
-          value: _dropDownValue,
+          value: _dropDownValue ?? SettingsParameters.DefaultCurrencySymbol,
           items: _currencies.map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,
