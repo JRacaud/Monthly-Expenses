@@ -158,10 +158,12 @@ class _ReportPageState extends State<ReportPage> {
           ),
           ActionFab(
               onPressed: () {
-                Navigator.push(
+                var res = Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => SettingsPage()),
                 );
+
+                res.then((_) => setState(() {}));
               },
               icon: const Icon(Icons.settings)),
         ],
