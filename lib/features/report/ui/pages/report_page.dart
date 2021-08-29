@@ -10,6 +10,7 @@ import 'package:monthly_expenses/features/report/ui/components/report_transactio
 import 'package:monthly_expenses/features/report/ui/components/report_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:monthly_expenses/features/settings/ui/pages/settings_page.dart';
 
 class ReportPage extends StatefulWidget {
   const ReportPage({Key? key}) : super(key: key);
@@ -151,7 +152,20 @@ class _ReportPageState extends State<ReportPage> {
           ActionFab(
               onPressed: _showAddTransactionDialog,
               icon: const Icon(Icons.add)),
-          ActionFab(onPressed: _copyPreviousMonth, icon: const Icon(Icons.copy))
+          ActionFab(
+            onPressed: _copyPreviousMonth,
+            icon: const Icon(Icons.copy),
+          ),
+          ActionFab(
+              onPressed: () {
+                var res = Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                );
+
+                res.then((_) => setState(() {}));
+              },
+              icon: const Icon(Icons.settings)),
         ],
       ),
     );
