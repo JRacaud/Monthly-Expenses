@@ -16,5 +16,7 @@
     "current": "Current",
     "transactionAdded": "Transaction Added",
     "startOfMonth": "Start of month",
-    "endOfMonth": "End of month"
+    "endOfMonth": "End of month",
+    "selectCurrency": "Select currency",
+    "settings": "Settings"
 }

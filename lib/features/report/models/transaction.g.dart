@@ -17,8 +17,8 @@ Transaction _$TransactionFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$TransactionToJson(Transaction instance) =>
     <String, dynamic>{
-      'name': instance.name,
-      'price': instance.price,
       'date': instance.date.toIso8601String(),
       'isProcessed': instance.isProcessed,
+      'name': instance.name,
+      'price': instance.price,
     };

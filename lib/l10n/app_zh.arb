@@ -16,5 +16,7 @@
     "current": "现金",
     "transactionAdded": "交易已添加",
     "startOfMonth": "月初",
-    "endOfMonth": "月末"
+    "endOfMonth": "月末",
+    "selectCurrency": "selectCurrency",
+    "settings": "Settings"
 }
