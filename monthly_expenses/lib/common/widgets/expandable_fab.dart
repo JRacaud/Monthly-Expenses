@@ -18,10 +18,10 @@ class ExpandableFab extends StatefulWidget {
   final Icon closeIcon;
 
   @override
-  _ExpandableFabState createState() => _ExpandableFabState();
+  ExpandableFabState createState() => ExpandableFabState();
 }
 
-class _ExpandableFabState extends State<ExpandableFab>
+class ExpandableFabState extends State<ExpandableFab>
     with SingleTickerProviderStateMixin {
   var _open = false;
   late final AnimationController _controller;
@@ -145,7 +145,7 @@ class _ExpandableFabState extends State<ExpandableFab>
 }
 
 class _ExpandingActionButton extends StatelessWidget {
-  _ExpandingActionButton(
+  const _ExpandingActionButton(
       {Key? key,
       required this.directionInDegrees,
       required this.maxDistance,
