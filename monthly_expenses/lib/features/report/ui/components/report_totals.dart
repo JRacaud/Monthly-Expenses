@@ -82,10 +82,10 @@ class _ReportTotalsState extends State<ReportTotals> {
 
   Future<String> _getNumberAsCurrency(double number) async {
     var prefs = await App.preferences;
-    var symbol = prefs.getString(SettingsParameters.CurrencySymbol);
+    var symbol = prefs.getString(SettingsParameters.currencySymbol);
 
     return number
-        .toCurrency(symbol ?? SettingsParameters.DefaultCurrencySymbol);
+        .toCurrency(symbol ?? SettingsParameters.defaultCurrencySymbol);
   }
 
   @override

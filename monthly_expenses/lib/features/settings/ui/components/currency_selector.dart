@@ -10,7 +10,7 @@ class CurrencySelector extends StatefulWidget {
 
 class _CurrencySelectorState extends State<CurrencySelector> {
   final _currencies = <String>[
-    SettingsParameters.DefaultCurrencySymbol,
+    SettingsParameters.defaultCurrencySymbol,
     "€",
     "£",
     "¥"
@@ -22,8 +22,8 @@ class _CurrencySelectorState extends State<CurrencySelector> {
     var prefs = App.preferences;
 
     prefs.then((p) => setState(() {
-          _dropDownValue = p.getString(SettingsParameters.CurrencySymbol) ??
-              SettingsParameters.DefaultCurrencySymbol;
+          _dropDownValue = p.getString(SettingsParameters.currencySymbol) ??
+              SettingsParameters.defaultCurrencySymbol;
         }));
   }
 
@@ -34,7 +34,7 @@ class _CurrencySelectorState extends State<CurrencySelector> {
         Text("${AppLocalizations.of(context)?.selectCurrency}"),
         Spacer(),
         DropdownButton<String>(
-          value: _dropDownValue ?? SettingsParameters.DefaultCurrencySymbol,
+          value: _dropDownValue ?? SettingsParameters.defaultCurrencySymbol,
           items: _currencies.map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,
@@ -47,7 +47,7 @@ class _CurrencySelectorState extends State<CurrencySelector> {
             });
 
             var prefs = await App.preferences;
-            prefs.setString(SettingsParameters.CurrencySymbol, value!);
+            prefs.setString(SettingsParameters.currencySymbol, value!);
           },
         )
       ],
