@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:monthly_expenses/app.dart';
 import 'package:niku/niku.dart';
 import 'package:niku/namespace.dart' as n;
 import 'package:device_preview/device_preview.dart';
@@ -7,21 +8,9 @@ import 'package:device_preview/device_preview.dart';
 void main() => runApp(
   DevicePreview(
     enabled: !kReleaseMode,
-    builder: (context) => const MyApp()
+    builder: (context) => App()
   )
 );
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: "Monthly Expenses",
-      home: ReportPage()
-    );
-  }
-}
 
 class ReportPage extends StatelessWidget {
   const ReportPage({
