@@ -16,5 +16,7 @@
     "current": "Solde",
     "transactionAdded": "Transaction ajoutée",
     "startOfMonth": "Début du mois",
-    "endOfMonth": "Fin du mois"
+    "endOfMonth": "Fin du mois",
+    "selectCurrency": "Choix monnaie",
+    "settings": "Paramètres"
 }

@@ -1,8 +1,11 @@
+import 'package:monthly_expenses/app.dart';
 import 'package:monthly_expenses/extensions/double_extensions.dart';
 import 'package:monthly_expenses/features/report/helpers/transaction_helper.dart';
 import 'package:monthly_expenses/features/report/models/transaction.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:monthly_expenses/features/settings/settings_parameters.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ReportTransactionList extends StatefulWidget {
   final List<Transaction> list;
@@ -29,6 +32,14 @@ class _ReportTransactionListState extends State<ReportTransactionList> {
     _totalRemaining = TransactionHelper.getTotalRemainder(widget.list);
   }
 
+  Future<String> _getNumberAsCurrency(double number) async {
+    var prefs = await App.preferences;
+    var symbol = prefs.getString(SettingsParameters.CurrencySymbol);
+
+    return number
+        .toCurrency(symbol ?? SettingsParameters.DefaultCurrencySymbol);
+  }
+
   @override
   void didUpdateWidget(ReportTransactionList oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -43,17 +54,28 @@ class _ReportTransactionListState extends State<ReportTransactionList> {
         children: [
           Card(
             child: Padding(
-              child: Text(
-                  "${AppLocalizations.of(context)!.processed}: ${_totalProcessed.toCurrency()}"),
-              padding: EdgeInsets.all(15.0),
-            ),
+                child: FutureBuilder(
+                  future: _getNumberAsCurrency(_totalProcessed),
+                  initialData: "0",
+                  builder: (_, AsyncSnapshot<String> text) {
+                    return Text(
+                        "${AppLocalizations.of(context)!.processed}: ${text.data}");
+                  },
+                ),
+                padding: EdgeInsets.all(15.0)),
             margin: EdgeInsets.all(20.0),
           ),
           Spacer(),
           Card(
               child: Padding(
-                child: Text(
-                    "${AppLocalizations.of(context)!.remaining}: ${_totalRemaining.toCurrency()}"),
+                child: FutureBuilder(
+                  future: _getNumberAsCurrency(_totalRemaining),
+                  initialData: "0",
+                  builder: (_, AsyncSnapshot<String> text) {
+                    return Text(
+                        "${AppLocalizations.of(context)!.remaining}: ${text.data}");
+                  },
+                ),
                 padding: EdgeInsets.all(15.0),
               ),
               margin: EdgeInsets.all(20.0)),
@@ -80,9 +102,16 @@ class _ReportTransactionListState extends State<ReportTransactionList> {
                               "${widget.list[index].name}",
                               style: textStyle,
                             ),
-                            trailing: Text(
-                              "${widget.list[index].price.toCurrency()}",
-                              style: textStyle,
+                            trailing: FutureBuilder(
+                              future: _getNumberAsCurrency(
+                                  widget.list[index].price),
+                              initialData: "0",
+                              builder: (_, AsyncSnapshot<String> text) {
+                                return Text(
+                                  "${text.data}",
+                                  style: textStyle,
+                                );
+                              },
                             ),
                             onTap: () {
                               setState(() {

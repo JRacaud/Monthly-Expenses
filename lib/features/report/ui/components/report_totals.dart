@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:monthly_expenses/app.dart';
 import 'package:monthly_expenses/features/report/helpers/report_helper.dart';
 import 'package:monthly_expenses/features/report/models/report.dart';
 import 'package:monthly_expenses/extensions/double_extensions.dart';
+import 'package:monthly_expenses/features/settings/settings_parameters.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ReportTotals extends StatefulWidget {
   final Report report;
@@ -78,6 +81,14 @@ class _ReportTotalsState extends State<ReportTotals> {
         (widget.report.startOfMonth + totalIncomes) - totalExpenses;
   }
 
+  Future<String> _getNumberAsCurrency(double number) async {
+    var prefs = await App.preferences;
+    var symbol = prefs.getString(SettingsParameters.CurrencySymbol);
+
+    return number
+        .toCurrency(symbol ?? SettingsParameters.DefaultCurrencySymbol);
+  }
+
   @override
   void didUpdateWidget(ReportTotals oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -95,8 +106,13 @@ class _ReportTotalsState extends State<ReportTotals> {
           Text(AppLocalizations.of(context)!.current,
               style: TextStyle(fontSize: 18)),
           Divider(color: Colors.transparent, height: 4),
-          Text("${widget.report.currentAmount.toCurrency()}",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))
+          FutureBuilder(
+            future: _getNumberAsCurrency(widget.report.currentAmount),
+            initialData: "0",
+            builder: (_, AsyncSnapshot<String> text) {
+              return Text("${text.data}");
+            },
+          )
         ])),
         Row(
           children: [
@@ -104,7 +120,13 @@ class _ReportTotalsState extends State<ReportTotals> {
               children: [
                 Text("${AppLocalizations.of(context)!.startOfMonth}"),
                 TextButton(
-                  child: Text("${widget.report.startOfMonth.toCurrency()}"),
+                  child: FutureBuilder(
+                    future: _getNumberAsCurrency(widget.report.startOfMonth),
+                    initialData: "0",
+                    builder: (_, AsyncSnapshot<String> text) {
+                      return Text("${text.data}");
+                    },
+                  ),
                   onPressed: _updateStartOfMonth,
                 ),
               ],
@@ -115,7 +137,14 @@ class _ReportTotalsState extends State<ReportTotals> {
                 child: Column(
                   children: [
                     Text("${AppLocalizations.of(context)!.endOfMonth}"),
-                    Text("${widget.report.estimatedEndOfMonth.toCurrency()}"),
+                    FutureBuilder(
+                      future: _getNumberAsCurrency(
+                          widget.report.estimatedEndOfMonth),
+                      initialData: "0",
+                      builder: (_, AsyncSnapshot<String> text) {
+                        return Text("${text.data}");
+                      },
+                    ),
                   ],
                 ))
           ],
