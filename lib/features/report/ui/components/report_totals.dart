@@ -5,7 +5,6 @@ import 'package:monthly_expenses/features/report/helpers/report_helper.dart';
 import 'package:monthly_expenses/features/report/models/report.dart';
 import 'package:monthly_expenses/extensions/double_extensions.dart';
 import 'package:monthly_expenses/features/settings/settings_parameters.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ReportTotals extends StatefulWidget {
   final Report report;

@@ -5,7 +5,6 @@ import 'package:monthly_expenses/features/report/models/transaction.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:monthly_expenses/features/settings/settings_parameters.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ReportTransactionList extends StatefulWidget {
   final List<Transaction> list;
