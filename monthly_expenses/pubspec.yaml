@@ -44,6 +44,7 @@ dependencies:
   path_provider: ^2.0.10
   json_annotation: ^4.5.0
   global_configuration: ^1.6.0
+  icons_launcher: ^1.1.9
 
 dev_dependencies:
   flutter_test:
@@ -102,3 +103,9 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
   generate: true
+
+flutter_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/icons/logo.png"
